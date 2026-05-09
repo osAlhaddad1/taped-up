@@ -6,7 +6,7 @@
   <title>TAPED UP — Your Cart</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link id="fontStyle1" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Instrument+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Instrument+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -56,29 +56,15 @@
     ::-webkit-scrollbar{width:5px} ::-webkit-scrollbar-track{background:var(--bg2)} ::-webkit-scrollbar-thumb{background:var(--acc);border-radius:3px}
     h1,h2,h3,h4{font-family:var(--ff-d);line-height:1.05;letter-spacing:-.02em}
 
-    /* ── 3 TYPOGRAPHY STYLES ── */
-    body[data-style="2"] {
-      --ff-d:'Playfair Display',Georgia,serif;
-      --ff-b:'Lora',Georgia,serif;
-    }
-    body[data-style="2"] h1,body[data-style="2"] h2,body[data-style="2"] h3,body[data-style="2"] h4{letter-spacing:-.01em}
-    body[data-style="3"] {
-      --ff-d:'Space Mono',ui-monospace,monospace;
-      --ff-b:'Space Mono',ui-monospace,monospace;
-      --ff-m:'Space Mono',ui-monospace,monospace;
-    }
-    body[data-style="3"] h1,body[data-style="3"] h2,body[data-style="3"] h3,body[data-style="3"] h4{letter-spacing:-.04em}
-
-    .settings-toggle{
-      display:inline-flex;align-items:center;justify-content:center;gap:.2rem;
-      min-width:38px;height:32px;padding:0 .55rem;
+    .lang-toggle{
+      display:inline-flex;align-items:center;justify-content:center;
+      min-width:42px;height:34px;padding:0 .7rem;
       background:transparent;border:1px solid var(--bdr);border-radius:var(--r);
-      color:var(--txt);cursor:pointer;
-      font-family:var(--ff-m);font-size:.72rem;font-weight:600;letter-spacing:.06em;
+      color:var(--txt2);cursor:pointer;
+      font-family:var(--ff-m);font-size:.72rem;font-weight:700;letter-spacing:.08em;
       transition:all .18s var(--ease);
     }
-    .settings-toggle:hover{border-color:var(--acc);color:var(--acc)}
-    .settings-toggle sup{font-size:.7em;font-weight:800;color:var(--acc);margin-left:1px}
+    .lang-toggle:hover{border-color:var(--acc);color:var(--txt)}
 
     @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
     @keyframes popIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
@@ -89,11 +75,13 @@
     .reel-ccw{transform-box:fill-box;transform-origin:center;animation:spinCCW 4s linear infinite}
 
     /* ── NAV ── */
-    nav{position:sticky;top:0;z-index:100;height:var(--navH);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;background:rgba(21,8,48,.86);backdrop-filter:blur(18px);border-bottom:1px solid var(--bdr)}
-    .nav-logo{font-family:var(--ff-d);font-size:1.2rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--txt);text-decoration:none}
+    nav{position:sticky;top:0;z-index:100;height:var(--navH);display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;background:rgba(21,8,48,.92);backdrop-filter:blur(20px) saturate(140%);border-bottom:1px solid var(--bdr)}
+    .nav-logo{font-family:var(--ff-d);font-size:1.15rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--txt);text-decoration:none;transition:opacity .2s}
     .nav-logo em{color:var(--acc);font-style:normal}
-    .nav-back{display:flex;align-items:center;gap:.5rem;padding:.42rem 1rem;background:transparent;border:1px solid var(--bdr);border-radius:var(--r);color:var(--txt2);font-family:var(--ff-m);font-size:.8rem;text-decoration:none;transition:all .2s}
-    .nav-back:hover{border-color:var(--bdr2);color:var(--txt)}
+    .nav-logo:hover{opacity:.85}
+    .nav-actions{display:flex;align-items:center;gap:.85rem}
+    .nav-back{display:inline-flex;align-items:center;gap:.5rem;padding:.5rem 1.1rem;background:transparent;border:1px solid var(--bdr);border-radius:var(--r);color:var(--txt2);font-family:var(--ff-b);font-size:.78rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;transition:all .2s var(--ease)}
+    .nav-back:hover{border-color:var(--acc);color:var(--txt);background:rgba(255,31,124,.06)}
 
     /* ── PAGE LAYOUT ── */
     .cart-page{max-width:1280px;margin:0 auto;padding:3.5rem 2rem 5rem;display:grid;grid-template-columns:1fr 420px;gap:3.5rem;align-items:start}
@@ -202,51 +190,12 @@
     /* ════════════ RETRO / EDGY ════════════ */
     :root {
       --pink:#FF1F7C; --cyan:#00C8EC; --hazard:#FFD200;
-      --marqueeH:26px;
     }
     body::before {
       content:''; position:fixed; inset:0; pointer-events:none; z-index:9998;
       background-image:radial-gradient(circle,rgba(255,255,255,.06) .85px,transparent 1.5px);
       background-size:5px 5px;
       opacity:.6;
-    }
-
-    .marquee {
-      position:fixed; top:0; left:0; right:0; z-index:101;
-      height:var(--marqueeH);
-      background:var(--txt); color:var(--bg);
-      overflow:hidden; display:flex; align-items:center;
-      font-family:var(--ff-m); font-size:.7rem; font-weight:700;
-      letter-spacing:.18em; text-transform:uppercase;
-      border-bottom:2px solid var(--txt);
-    }
-    .marquee-track {
-      display:inline-block; white-space:nowrap;
-      animation:marquee 36s linear infinite;
-      padding-left:100%;
-    }
-    .marquee-track span { padding:0 .9rem; }
-    .marquee-track em { color:var(--acc); font-style:normal; padding:0 .15rem; }
-    .marquee-track .star { color:var(--hazard); font-style:normal; }
-    @keyframes marquee { to { transform:translateX(-100%); } }
-
-    nav { top:var(--marqueeH); border-top:2px solid var(--txt); }
-    body { padding-top:var(--marqueeH); }
-
-    .rec-indicator {
-      display:inline-flex; align-items:center; gap:.4rem;
-      font-family:var(--ff-m); font-size:.7rem; font-weight:700;
-      color:var(--acc); letter-spacing:.14em; text-transform:uppercase;
-    }
-    .rec-dot {
-      width:9px; height:9px; border-radius:50%;
-      background:var(--acc);
-      box-shadow:0 0 0 2px rgba(232,64,48,.18);
-      animation:rec-pulse 1.2s ease-in-out infinite;
-    }
-    @keyframes rec-pulse {
-      0%,100% { opacity:1; transform:scale(1); }
-      50% { opacity:.3; transform:scale(.82); }
     }
 
     /* Brutalist hard-offset shadows on CTAs */
@@ -313,9 +262,6 @@
     }
     @media(max-width:600px){
       nav{padding:0 1rem}
-      :root { --marqueeH:22px; }
-      .marquee{font-size:.62rem;letter-spacing:.14em}
-      .rec-indicator span:not(.rec-dot){display:none}
       .hazard-divider{height:12px}
       .hazard-divider::before,.hazard-divider::after{width:10px;height:10px}
       .cart-page{padding:2rem 1rem 4rem;gap:2rem}
@@ -331,22 +277,14 @@
     }
   </style>
 </head>
-<body data-style="1">
+<body>
 
 <div class="crt-lines" aria-hidden="true"></div>
 
-<div class="marquee" aria-hidden="true">
-  <div class="marquee-track">
-    <span class="star">★</span><span>TAPED UP</span><span class="star">★</span><span>CHECKOUT</span><span class="star">★</span><span>SINCE <em>1996</em></span><span class="star">★</span><span>100% ANALOG</span><span class="star">★</span><span>SHIP WORLDWIDE</span><span class="star">★</span><span>HAND DUBBED</span><span class="star">★</span><span>TAPED UP</span><span class="star">★</span><span>CHECKOUT</span><span class="star">★</span><span>SINCE <em>1996</em></span><span class="star">★</span><span>100% ANALOG</span><span class="star">★</span><span>SHIP WORLDWIDE</span><span class="star">★</span>
-  </div>
-</div>
-
 <nav>
   <a href="index.html" class="nav-logo">TAPED<em> UP</em></a>
-  <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;justify-content:flex-end">
-    <div class="rec-indicator"><span class="rec-dot"></span><span>REC</span></div>
-    <button class="settings-toggle" id="langTog" onclick="cycleLang()" title="Language">EN</button>
-    <button class="settings-toggle" id="styleTog" onclick="cycleStyle()" title="Style">Aa<sup id="styleNum">1</sup></button>
+  <div class="nav-actions">
+    <button class="lang-toggle" id="langTog" onclick="cycleLang()" title="Language">EN</button>
     <a href="index.html" class="nav-back" data-tx="nav.shop">← Keep Shopping</a>
   </div>
 </nav>
@@ -605,34 +543,6 @@ function cycleLang() {
   applyLang();
 }
 
-/* ─── TYPOGRAPHY STYLE PICKER ─── */
-const STYLES = {
-  '1':{name:'Neon',     fonts:null},
-  '2':{name:'Editorial',fonts:'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Lora:wght@400;500&display=swap'},
-  '3':{name:'Tech',     fonts:'https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap'}
-};
-let STYLE = localStorage.getItem('tuStyle') || '1';
-
-function ensureStyleFonts(s) {
-  const def = STYLES[s];
-  if (!def || !def.fonts) return;
-  const id = 'fontStyle'+s;
-  if (document.getElementById(id)) return;
-  const l = document.createElement('link');
-  l.id = id; l.rel = 'stylesheet'; l.href = def.fonts;
-  document.head.appendChild(l);
-}
-function applyStyle() {
-  ensureStyleFonts(STYLE);
-  document.body.dataset.style = STYLE;
-  const sn = document.getElementById('styleNum'); if (sn) sn.textContent = STYLE;
-}
-function cycleStyle() {
-  STYLE = STYLE === '1' ? '2' : STYLE === '2' ? '3' : '1';
-  localStorage.setItem('tuStyle', STYLE);
-  applyStyle();
-}
-
 /* ─── CART STATE ─── */
 let cart = [];
 try { cart = JSON.parse(localStorage.getItem('tuCart') || '[]'); } catch(e) { cart=[]; }
@@ -867,7 +777,6 @@ async function placeOrder() {
 }
 
 /* ─── INIT SETTINGS BEFORE FIRST RENDER ─── */
-applyStyle();
 applyLang();
 
 /* ─── INIT ─── */

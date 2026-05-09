@@ -6,7 +6,7 @@
   <title>TAPED UP — Custom Cassettes</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link id="fontStyle1" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Instrument+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Instrument+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -51,33 +51,16 @@
     ::-webkit-scrollbar{width:5px} ::-webkit-scrollbar-track{background:var(--bg2)} ::-webkit-scrollbar-thumb{background:var(--acc);border-radius:3px}
     h1,h2,h3,h4{font-family:var(--ff-d);line-height:1.05;letter-spacing:-.02em}
 
-    /* ── 3 TYPOGRAPHY STYLES ───────────────────────── */
-    /* Style 1 (default): NEON — Syne / Instrument Sans / Courier Prime */
-    /* Style 2: EDITORIAL — Playfair Display / Lora / Courier Prime */
-    body[data-style="2"] {
-      --ff-d:'Playfair Display',Georgia,serif;
-      --ff-b:'Lora',Georgia,serif;
-    }
-    body[data-style="2"] h1,body[data-style="2"] h2,body[data-style="2"] h3,body[data-style="2"] h4{letter-spacing:-.01em}
-    /* Style 3: TECH — Space Mono everywhere */
-    body[data-style="3"] {
-      --ff-d:'Space Mono',ui-monospace,monospace;
-      --ff-b:'Space Mono',ui-monospace,monospace;
-      --ff-m:'Space Mono',ui-monospace,monospace;
-    }
-    body[data-style="3"] h1,body[data-style="3"] h2,body[data-style="3"] h3,body[data-style="3"] h4{letter-spacing:-.04em}
-
-    /* Settings toggles in nav */
-    .settings-toggle{
-      display:inline-flex;align-items:center;justify-content:center;gap:.2rem;
-      min-width:38px;height:32px;padding:0 .55rem;
+    /* Language toggle in nav */
+    .lang-toggle{
+      display:inline-flex;align-items:center;justify-content:center;
+      min-width:42px;height:34px;padding:0 .7rem;
       background:transparent;border:1px solid var(--bdr);border-radius:var(--r);
-      color:var(--txt);cursor:pointer;
-      font-family:var(--ff-m);font-size:.72rem;font-weight:600;letter-spacing:.06em;
+      color:var(--txt2);cursor:pointer;
+      font-family:var(--ff-m);font-size:.72rem;font-weight:700;letter-spacing:.08em;
       transition:all .18s var(--ease);
     }
-    .settings-toggle:hover{border-color:var(--acc);color:var(--acc)}
-    .settings-toggle sup{font-size:.7em;font-weight:800;color:var(--acc);margin-left:1px}
+    .lang-toggle:hover{border-color:var(--acc);color:var(--txt)}
     .nav-mobile-row{display:flex;justify-content:space-between;align-items:center;padding:.9rem 0;border-bottom:1px solid var(--bdr);font-family:var(--ff-m);font-size:.85rem;color:var(--txt);letter-spacing:.04em}
     .nav-mobile-row:last-child{border-bottom:none}
 
@@ -92,26 +75,42 @@
     nav {
       position:fixed; top:0; left:0; right:0; z-index:100;
       height:var(--navH); display:flex; align-items:center; justify-content:space-between;
-      padding:0 2rem;
-      background:rgba(21,8,48,.86); backdrop-filter:blur(18px);
+      padding:0 2.5rem;
+      background:rgba(21,8,48,.92); backdrop-filter:blur(20px) saturate(140%);
       border-bottom:1px solid var(--bdr);
     }
-    .nav-logo{font-family:var(--ff-d);font-size:1.2rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--txt);text-decoration:none}
+    .nav-logo{font-family:var(--ff-d);font-size:1.15rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--txt);text-decoration:none;transition:opacity .2s}
     .nav-logo em{color:var(--acc);font-style:normal}
-    .nav-links{display:flex;align-items:center;gap:2rem}
-    .nav-link{font-size:.75rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s}
-    .nav-link:hover{color:var(--txt)}
-    .cart-btn{
-      display:flex;align-items:center;gap:.5rem;padding:.45rem 1rem;
-      background:transparent;border:1px solid var(--bdr);border-radius:var(--r);
-      color:var(--txt);font-family:var(--ff-m);font-size:.82rem;cursor:pointer;
-      text-decoration:none;transition:all .2s var(--ease);
+    .nav-logo:hover{opacity:.85}
+    .nav-links{display:flex;align-items:center;gap:2.25rem}
+    .nav-link{
+      position:relative;
+      font-family:var(--ff-b);font-size:.78rem;font-weight:500;letter-spacing:.12em;
+      text-transform:uppercase;color:var(--txt2);text-decoration:none;
+      padding:.4rem 0;transition:color .2s var(--ease);
     }
-    .cart-btn:hover{border-color:var(--acc);color:var(--acc)}
+    .nav-link::after{
+      content:'';position:absolute;left:0;right:0;bottom:-2px;height:1px;
+      background:var(--acc);transform:scaleX(0);transform-origin:center;
+      transition:transform .25s var(--ease);
+    }
+    .nav-link:hover{color:var(--txt)}
+    .nav-link:hover::after{transform:scaleX(1)}
+    .nav-actions{display:flex;align-items:center;gap:.85rem}
+    .cart-btn{
+      display:inline-flex;align-items:center;gap:.55rem;padding:.5rem 1.1rem;
+      background:transparent;border:1px solid var(--bdr);border-radius:var(--r);
+      color:var(--txt);font-family:var(--ff-b);font-size:.78rem;font-weight:500;
+      letter-spacing:.1em;text-transform:uppercase;
+      cursor:pointer;text-decoration:none;transition:all .2s var(--ease);
+    }
+    .cart-btn:hover{border-color:var(--acc);background:rgba(255,31,124,.06)}
     .cart-count{
       display:inline-flex;align-items:center;justify-content:center;
-      width:19px;height:19px;background:var(--acc);color:#fff;border-radius:50%;
-      font-family:var(--ff-d);font-size:.65rem;font-weight:800;transition:transform .3s var(--spring);
+      min-width:20px;height:20px;padding:0 5px;
+      background:var(--acc);color:#fff;border-radius:100px;
+      font-family:var(--ff-d);font-size:.66rem;font-weight:800;
+      transition:transform .3s var(--spring);
     }
     .cart-count.bump{animation:popIn .35s var(--spring)}
 
@@ -289,7 +288,6 @@
     /* ════════════ RETRO / EDGY ════════════ */
     :root {
       --pink:#FF1F7C; --cyan:#00C8EC; --hazard:#FFD200;
-      --marqueeH:26px;
     }
     /* Halftone dot overlay (light on dark) */
     body::before {
@@ -308,51 +306,6 @@
       mix-blend-mode:multiply; opacity:.4;
     }
 
-    /* Marquee strip */
-    .marquee {
-      position:fixed; top:0; left:0; right:0; z-index:101;
-      height:var(--marqueeH);
-      background:var(--txt); color:var(--bg);
-      overflow:hidden; display:flex; align-items:center;
-      font-family:var(--ff-m); font-size:.7rem; font-weight:700;
-      letter-spacing:.18em; text-transform:uppercase;
-      border-bottom:2px solid var(--txt);
-    }
-    .marquee-track {
-      display:inline-block; white-space:nowrap;
-      animation:marquee 36s linear infinite;
-      padding-left:100%;
-    }
-    .marquee-track span { padding:0 .9rem; }
-    .marquee-track em { color:var(--acc); font-style:normal; padding:0 .15rem; }
-    .marquee-track .star { color:var(--hazard); font-style:normal; }
-    @keyframes marquee { to { transform:translateX(-100%); } }
-
-    /* Push nav + hero down for marquee */
-    nav { top:var(--marqueeH); border-top:2px solid var(--txt); }
-    #hero { padding-top:calc(var(--navH) + var(--marqueeH)); }
-    .nav-mobile { top:calc(var(--navH) + var(--marqueeH)); }
-
-    /* REC indicator (live recording vibe) */
-    .rec-indicator {
-      display:inline-flex; align-items:center; gap:.4rem;
-      font-family:var(--ff-m); font-size:.7rem; font-weight:700;
-      color:var(--acc); letter-spacing:.14em; text-transform:uppercase;
-      padding-right:.4rem;
-    }
-    .rec-dot {
-      width:9px; height:9px; border-radius:50%;
-      background:var(--acc);
-      box-shadow:0 0 0 2px rgba(232,64,48,.18);
-      animation:rec-pulse 1.2s ease-in-out infinite;
-    }
-    @keyframes rec-pulse {
-      0%,100% { opacity:1; transform:scale(1); }
-      50% { opacity:.3; transform:scale(.82); }
-    }
-    @media(max-width:600px) {
-      .rec-indicator span:not(.rec-dot){ display:none; }
-    }
 
     /* Brutalist hard-offset shadows on CTAs */
     .btn-primary, .btn-next, .btn-addcart, .btn-shop, .btn-pay {
@@ -409,7 +362,7 @@
 
     /* SIDE A sticker on hero */
     .side-a-sticker {
-      position:absolute; top:calc(var(--navH) + var(--marqueeH) + 2rem); left:1.5rem; z-index:5;
+      position:absolute; top:calc(var(--navH) + 2rem); left:1.5rem; z-index:5;
       transform:rotate(-10deg);
       background:var(--hazard);
       color:var(--txt);
@@ -468,9 +421,8 @@
     @media(max-width:600px){
       .nav-links{display:none}
       .nav-ham{display:flex}
-      nav{padding:0 1rem}
-      :root { --marqueeH:22px; }
-      .marquee{font-size:.62rem;letter-spacing:.14em}
+      .nav-actions .cart-btn{display:none}
+      nav{padding:0 1.25rem}
       .hazard-divider{height:12px}
       .hazard-divider::before,.hazard-divider::after{width:10px;height:10px}
       .hero-inner{padding:2rem 1rem;gap:2rem}
@@ -504,28 +456,20 @@
     }
   </style>
 </head>
-<body data-style="1">
+<body>
 
 <div class="crt-lines" aria-hidden="true"></div>
-
-<div class="marquee" aria-hidden="true">
-  <div class="marquee-track">
-    <span class="star">★</span><span>TAPED UP</span><span class="star">★</span><span>MAKE NOISE</span><span class="star">★</span><span>SINCE <em>1996</em></span><span class="star">★</span><span>100% ANALOG</span><span class="star">★</span><span>SHIP WORLDWIDE</span><span class="star">★</span><span>HAND DUBBED</span><span class="star">★</span><span>TAPED UP</span><span class="star">★</span><span>MAKE NOISE</span><span class="star">★</span><span>SINCE <em>1996</em></span><span class="star">★</span><span>100% ANALOG</span><span class="star">★</span><span>SHIP WORLDWIDE</span><span class="star">★</span><span>HAND DUBBED</span><span class="star">★</span>
-  </div>
-</div>
 
 <nav>
   <a href="index.html" class="nav-logo">TAPED<em> UP</em></a>
   <div class="nav-links">
     <a href="#customizer" class="nav-link" data-tx="nav.customize">Customize</a>
     <a href="cart.html" class="nav-link" data-tx="nav.cart">Cart</a>
-    <button class="settings-toggle" id="langTog" onclick="cycleLang()" title="Language">EN</button>
-    <button class="settings-toggle" id="styleTog" onclick="cycleStyle()" title="Typography style">Aa<sup id="styleNum">1</sup></button>
   </div>
-  <div style="display:flex;align-items:center;gap:.6rem">
-    <div class="rec-indicator"><span class="rec-dot"></span><span>REC</span></div>
+  <div class="nav-actions">
+    <button class="lang-toggle" id="langTog" onclick="cycleLang()" title="Language">EN</button>
     <a href="cart.html" class="cart-btn">
-      ◉ <span data-tx="nav.cart">Cart</span> <span class="cart-count" id="cartCount">0</span>
+      <span data-tx="nav.cart">Cart</span> <span class="cart-count" id="cartCount">0</span>
     </a>
     <button class="nav-ham" id="navHam" onclick="toggleMenu()" aria-label="Menu">
       <span></span><span></span><span></span>
@@ -538,11 +482,7 @@
   <a href="cart.html" class="nav-mobile-link" data-tx="nav.cart" onclick="closeMenu()">Cart</a>
   <div class="nav-mobile-row">
     <span data-tx="settings.language">Language</span>
-    <button class="settings-toggle" id="langTogM" onclick="cycleLang()">EN</button>
-  </div>
-  <div class="nav-mobile-row">
-    <span data-tx="settings.style">Style</span>
-    <button class="settings-toggle" id="styleTogM" onclick="cycleStyle()">Aa<sup id="styleNumM">1</sup></button>
+    <button class="lang-toggle" id="langTogM" onclick="cycleLang()">EN</button>
   </div>
 </div>
 
@@ -700,7 +640,7 @@ const PRICE = 28.99;
 const I18N = {
   en: {
     'nav.customize':'Customize','nav.cart':'Cart',
-    'settings.language':'Language','settings.style':'Style',
+    'settings.language':'Language',
     'hero.pill':'Now Shipping Worldwide',
     'hero.title1':'MAKE','hero.title2':'NOISE.',
     'hero.sub':'Your sound. Your design. Your tape.',
@@ -723,7 +663,7 @@ const I18N = {
   },
   nl: {
     'nav.customize':'Aanpassen','nav.cart':'Winkelwagen',
-    'settings.language':'Taal','settings.style':'Stijl',
+    'settings.language':'Taal',
     'hero.pill':'Nu Wereldwijd Verzonden',
     'hero.title1':'MAAK','hero.title2':'LAWAAI.',
     'hero.sub':'Jouw geluid. Jouw ontwerp. Jouw cassette.',
@@ -768,36 +708,6 @@ function cycleLang() {
   LANG = LANG === 'en' ? 'nl' : 'en';
   localStorage.setItem('tuLang', LANG);
   applyLang();
-}
-
-/* ══════════════════════════════════════════════════════
-   TYPOGRAPHY STYLE PICKER (3 options)
-══════════════════════════════════════════════════════ */
-const STYLES = {
-  '1':{name:'Neon',     fonts:null /* default already loaded */},
-  '2':{name:'Editorial',fonts:'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Lora:wght@400;500&display=swap'},
-  '3':{name:'Tech',     fonts:'https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap'}
-};
-let STYLE = localStorage.getItem('tuStyle') || '1';
-
-function ensureStyleFonts(s) {
-  const def = STYLES[s];
-  if (!def || !def.fonts) return;
-  const id = 'fontStyle'+s;
-  if (document.getElementById(id)) return;
-  const l = document.createElement('link');
-  l.id = id; l.rel = 'stylesheet'; l.href = def.fonts;
-  document.head.appendChild(l);
-}
-function applyStyle() {
-  ensureStyleFonts(STYLE);
-  document.body.dataset.style = STYLE;
-  ['styleNum','styleNumM'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = STYLE; });
-}
-function cycleStyle() {
-  STYLE = STYLE === '1' ? '2' : STYLE === '2' ? '3' : '1';
-  localStorage.setItem('tuStyle', STYLE);
-  applyStyle();
 }
 
 /* ══════════════════════════════════════════════════════
@@ -1325,7 +1235,6 @@ window.addEventListener('resize', ()=>{
    INIT
 ══════════════════════════════════════════════════════ */
 function init() {
-  applyStyle();
   applyLang();
   buildColorGrid();
   buildShapeGrid();
