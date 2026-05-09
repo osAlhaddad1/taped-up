@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TAPED UP — Your Cart</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link id="fontStyle1" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Instrument+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      /* SYNTHWAVE / NEON ZINE PALETTE */
+      --bg:#150830;        /* deep saturated purple */
+      --bg2:#1F0E45;
+      --bg3:#2A1660;
+      --surf:#1D0C3F;
+      --surf2:#2A1458;
+      --bdr:#4A2A8F;
+      --bdr2:#6840B8;
+      --txt:#F4ECFF;
+      --txt2:#C0A8E8;
+      --muted:#8870B8;
+      --acc:#FF1F7C;
+      --accH:#FF4FA0;
+      --gold:#C4FF3D;
+      --goldH:#DDFF60;
+      --green:#00FF95;
+      --cyan:#00E8FF;
+      --navH:62px; --r:8px; --rLg:16px;
+      --ease:cubic-bezier(.4,0,.2,1);
+      --spring:cubic-bezier(.34,1.56,.64,1);
+      --ff-d:'Syne',sans-serif;
+      --ff-m:'Courier Prime',monospace;
+      --ff-b:'Instrument Sans',sans-serif;
+    }
+    html { scroll-behavior:smooth; }
+    body {
+      background:var(--bg);
+      background-image:
+        radial-gradient(ellipse 80% 60% at 20% 0%, rgba(255,31,124,.12), transparent 60%),
+        radial-gradient(ellipse 70% 50% at 90% 100%, rgba(0,232,255,.10), transparent 55%);
+      color:var(--txt); font-family:var(--ff-b); line-height:1.6; overflow-x:hidden; min-height:100vh;
+    }
+    body::after {
+      content:''; position:fixed; inset:0; z-index:9999; pointer-events:none; opacity:.07;
+      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size:200px;
+      mix-blend-mode:screen;
+    }
+    .crt-lines {
+      position:fixed; inset:0; pointer-events:none; z-index:9997;
+      background-image:repeating-linear-gradient(0deg, rgba(0,0,0,.18) 0, rgba(0,0,0,.18) 1px, transparent 1px, transparent 3px);
+      mix-blend-mode:multiply; opacity:.4;
+    }
+    ::-webkit-scrollbar{width:5px} ::-webkit-scrollbar-track{background:var(--bg2)} ::-webkit-scrollbar-thumb{background:var(--acc);border-radius:3px}
+    h1,h2,h3,h4{font-family:var(--ff-d);line-height:1.05;letter-spacing:-.02em}
+
+    /* ── 3 TYPOGRAPHY STYLES ── */
+    body[data-style="2"] {
+      --ff-d:'Playfair Display',Georgia,serif;
+      --ff-b:'Lora',Georgia,serif;
+    }
+    body[data-style="2"] h1,body[data-style="2"] h2,body[data-style="2"] h3,body[data-style="2"] h4{letter-spacing:-.01em}
+    body[data-style="3"] {
+      --ff-d:'Space Mono',ui-monospace,monospace;
+      --ff-b:'Space Mono',ui-monospace,monospace;
+      --ff-m:'Space Mono',ui-monospace,monospace;
+    }
+    body[data-style="3"] h1,body[data-style="3"] h2,body[data-style="3"] h3,body[data-style="3"] h4{letter-spacing:-.04em}
+
+    .settings-toggle{
+      display:inline-flex;align-items:center;justify-content:center;gap:.2rem;
+      min-width:38px;height:32px;padding:0 .55rem;
+      background:transparent;border:1px solid var(--bdr);border-radius:var(--r);
+      color:var(--txt);cursor:pointer;
+      font-family:var(--ff-m);font-size:.72rem;font-weight:600;letter-spacing:.06em;
+      transition:all .18s var(--ease);
+    }
+    .settings-toggle:hover{border-color:var(--acc);color:var(--acc)}
+    .settings-toggle sup{font-size:.7em;font-weight:800;color:var(--acc);margin-left:1px}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+    @keyframes popIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+    @keyframes spinCW{to{transform:rotate(360deg)}}
+    @keyframes spinCCW{to{transform:rotate(-360deg)}}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .reel-cw{transform-box:fill-box;transform-origin:center;animation:spinCW 3s linear infinite}
+    .reel-ccw{transform-box:fill-box;transform-origin:center;animation:spinCCW 4s linear infinite}
+
+    /* ── NAV ── */
+    nav{position:sticky;top:0;z-index:100;height:var(--navH);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;background:rgba(21,8,48,.86);backdrop-filter:blur(18px);border-bottom:1px solid var(--bdr)}
+    .nav-logo{font-family:var(--ff-d);font-size:1.2rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--txt);text-decoration:none}
+    .nav-logo em{color:var(--acc);font-style:normal}
+    .nav-back{display:flex;align-items:center;gap:.5rem;padding:.42rem 1rem;background:transparent;border:1px solid var(--bdr);border-radius:var(--r);color:var(--txt2);font-family:var(--ff-m);font-size:.8rem;text-decoration:none;transition:all .2s}
+    .nav-back:hover{border-color:var(--bdr2);color:var(--txt)}
+
+    /* ── PAGE LAYOUT ── */
+    .cart-page{max-width:1280px;margin:0 auto;padding:3.5rem 2rem 5rem;display:grid;grid-template-columns:1fr 420px;gap:3.5rem;align-items:start}
+
+    /* ── CART ITEMS COLUMN ── */
+    .items-col h1{font-size:clamp(1.8rem,3vw,2.6rem);font-weight:800;margin-bottom:.4rem}
+    .items-sub{font-family:var(--ff-m);font-size:.78rem;color:var(--muted);margin-bottom:2rem;letter-spacing:.05em}
+
+    .cart-empty-page{padding:4rem 2rem;text-align:center;border:1px dashed var(--bdr);border-radius:var(--rLg);background:var(--surf)}
+    .ce-icon{font-size:3rem;opacity:.25;display:block;margin-bottom:1rem}
+    .ce-txt{font-family:var(--ff-m);font-size:.9rem;color:var(--muted);margin-bottom:1.5rem}
+    .btn-shop{display:inline-flex;align-items:center;gap:.5rem;padding:.72rem 1.75rem;background:var(--acc);color:#fff;border:none;border-radius:var(--r);font-family:var(--ff-d);font-size:.88rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:all .2s var(--ease)}
+    .btn-shop:hover{background:var(--accH);transform:translateY(-1px);box-shadow:0 5px 18px rgba(255,31,124,.55), 0 0 32px rgba(255,31,124,.25)}
+
+    /* cart item card */
+    .cart-item{display:flex;gap:1.4rem;padding:1.2rem;background:var(--surf);border:1px solid var(--bdr);border-radius:var(--rLg);margin-bottom:.85rem;position:relative;animation:fadeUp .35s var(--ease) both;transition:border-color .2s;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+    .cart-item:hover{border-color:var(--bdr2)}
+    .ci-thumb{width:88px;flex-shrink:0;filter:drop-shadow(0 4px 12px rgba(0,0,0,.18))}
+    .ci-details{flex:1;min-width:0}
+    .ci-name{font-family:var(--ff-d);font-size:.98rem;font-weight:700;margin-bottom:.22rem}
+    .ci-meta{font-family:var(--ff-m);font-size:.68rem;color:var(--muted);margin-bottom:.5rem;letter-spacing:.04em}
+    .ci-tracks{font-family:var(--ff-m);font-size:.68rem;color:var(--txt2);line-height:1.55;max-width:340px}
+    .ci-row{display:flex;align-items:center;justify-content:space-between;margin-top:.75rem;gap:1rem;flex-wrap:wrap}
+    .ci-price{font-family:var(--ff-d);font-size:1.05rem;font-weight:700;color:var(--gold);text-shadow:0 0 14px rgba(196,255,61,.5)}
+    .ci-qty{display:flex;align-items:center;gap:.5rem}
+    .qty-btn{width:28px;height:28px;background:var(--bg3);border:1px solid var(--bdr);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.85rem;color:var(--txt);transition:all .15s}
+    .qty-btn:hover{background:var(--bdr);border-color:var(--bdr2)}
+    .qty-n{font-family:var(--ff-m);font-size:.88rem;min-width:1.6rem;text-align:center}
+    .ci-rm{position:absolute;top:.75rem;right:.75rem;background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:.75rem;opacity:0;transition:all .2s;padding:2px 5px;border-radius:4px}
+    .cart-item:hover .ci-rm{opacity:1}
+    .ci-rm:hover{color:var(--acc);background:rgba(232,64,48,.08)}
+
+    /* order summary strip */
+    .order-summary{padding:1.2rem 1.4rem;background:var(--surf);border:1px solid var(--bdr);border-radius:var(--rLg);margin-top:1.25rem;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+    .os-row{display:flex;justify-content:space-between;align-items:center;padding:.45rem 0;font-size:.88rem}
+    .os-row:not(:last-child){border-bottom:1px solid var(--bdr)}
+    .os-lbl{color:var(--muted);font-family:var(--ff-m);font-size:.72rem;text-transform:uppercase;letter-spacing:.08em}
+    .os-val{font-family:var(--ff-d);font-weight:700}
+    .os-total .os-lbl{color:var(--txt);font-size:.8rem}
+    .os-total .os-val{font-size:1.5rem;color:var(--gold);text-shadow:0 0 18px rgba(196,255,61,.5)}
+
+    /* ── CHECKOUT COLUMN ── */
+    .checkout-col{position:sticky;top:calc(var(--navH) + 1.5rem)}
+    .checkout-box{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--rLg);overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.07)}
+    .co-head{padding:1.4rem 1.6rem;border-bottom:1px solid var(--bdr);background:var(--bg3)}
+    .co-head-title{font-family:var(--ff-d);font-size:1.1rem;font-weight:800;letter-spacing:.04em}
+
+    .co-body{padding:1.6rem}
+    .form-section{margin-bottom:1.75rem}
+    .form-section:last-of-type{margin-bottom:0}
+    .form-section-title{font-family:var(--ff-m);font-size:.7rem;text-transform:uppercase;letter-spacing:.14em;color:var(--acc);margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+    .form-section-title::before{content:'';width:18px;height:1px;background:var(--acc)}
+
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:.85rem}
+    .form-row.full{grid-template-columns:1fr}
+    .form-group{display:flex;flex-direction:column;gap:.35rem;margin-bottom:.85rem}
+    .form-label{font-family:var(--ff-m);font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+    .form-input, .form-select{
+      width:100%;padding:.72rem .9rem;
+      background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r);
+      color:var(--txt);font-family:var(--ff-b);font-size:.9rem;
+      outline:none;transition:border-color .2s,box-shadow .2s;
+      -webkit-appearance:none;appearance:none;
+    }
+    .form-input::placeholder{color:var(--muted)}
+    .form-input:focus,.form-select:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(255,31,124,.18), 0 0 24px rgba(255,31,124,.15)}
+    .form-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23C0A8E8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .85rem center;padding-right:2.2rem;cursor:pointer}
+    .form-select option{background:var(--surf);color:var(--txt)}
+
+    /* divider */
+    .co-divider{height:1px;background:var(--bdr);margin:1.5rem 0}
+
+    /* pay button */
+    .btn-pay{
+      width:100%;padding:1.05rem;margin-top:1.4rem;
+      background:var(--acc);color:#fff;border:none;border-radius:var(--rLg);
+      font-family:var(--ff-d);font-size:1.05rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+      cursor:pointer;transition:all .2s var(--ease);
+      display:flex;align-items:center;justify-content:center;gap:.6rem;
+    }
+    .btn-pay:hover:not(:disabled){background:var(--accH);transform:translateY(-2px);box-shadow:0 10px 32px rgba(255,31,124,.55), 0 0 50px rgba(255,31,124,.35)}
+    .btn-pay:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+    .btn-pay.loading{opacity:.75;cursor:not-allowed;pointer-events:none}
+    .spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+    .lock-icon{font-size:.85rem;opacity:.75}
+
+    .pay-note{font-family:var(--ff-m);font-size:.66rem;color:var(--muted);text-align:center;margin-top:.75rem;letter-spacing:.03em;line-height:1.6}
+
+    /* ── SUCCESS STATE ── */
+    #successState{display:none;padding:3rem 2rem;text-align:center;animation:fadeUp .5s var(--ease) both}
+    #successState.show{display:block}
+    .success-ring{width:72px;height:72px;border:2px solid var(--green);border-radius:50%;background:rgba(0,255,149,.1);display:flex;align-items:center;justify-content:center;font-size:1.6rem;margin:0 auto 1.2rem;color:var(--green);box-shadow:0 0 32px rgba(0,255,149,.5);animation:popIn .5s var(--spring) both}
+    .success-title{font-family:var(--ff-d);font-size:1.5rem;font-weight:800;margin-bottom:.5rem}
+    .success-sub{font-family:var(--ff-m);font-size:.8rem;color:var(--muted);line-height:1.8}
+    .success-highlight{color:var(--txt2);font-weight:700;font-style:normal}
+    .success-order{font-family:var(--ff-m);font-size:.72rem;color:var(--txt2);margin-top:1rem;padding:.6rem 1rem;background:var(--bg3);border:1px solid var(--bdr);border-radius:var(--r);display:inline-block;letter-spacing:.08em}
+    .btn-continue{display:inline-flex;align-items:center;gap:.5rem;padding:.72rem 1.75rem;background:var(--bg3);border:1px solid var(--bdr);border-radius:var(--r);color:var(--txt);font-family:var(--ff-m);font-size:.8rem;cursor:pointer;text-decoration:none;transition:all .2s;margin-top:1.5rem}
+    .btn-continue:hover{border-color:var(--bdr2);color:var(--txt)}
+
+    /* ── FOOTER ── */
+    footer{border-top:1px solid var(--bdr);padding:2rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+    .footer-logo{font-family:var(--ff-d);font-size:.9rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+    .footer-logo em{color:var(--acc);font-style:normal}
+    .footer-txt{font-family:var(--ff-m);font-size:.68rem;color:var(--muted)}
+
+    /* ════════════ RETRO / EDGY ════════════ */
+    :root {
+      --pink:#FF1F7C; --cyan:#00C8EC; --hazard:#FFD200;
+      --marqueeH:26px;
+    }
+    body::before {
+      content:''; position:fixed; inset:0; pointer-events:none; z-index:9998;
+      background-image:radial-gradient(circle,rgba(255,255,255,.06) .85px,transparent 1.5px);
+      background-size:5px 5px;
+      opacity:.6;
+    }
+
+    .marquee {
+      position:fixed; top:0; left:0; right:0; z-index:101;
+      height:var(--marqueeH);
+      background:var(--txt); color:var(--bg);
+      overflow:hidden; display:flex; align-items:center;
+      font-family:var(--ff-m); font-size:.7rem; font-weight:700;
+      letter-spacing:.18em; text-transform:uppercase;
+      border-bottom:2px solid var(--txt);
+    }
+    .marquee-track {
+      display:inline-block; white-space:nowrap;
+      animation:marquee 36s linear infinite;
+      padding-left:100%;
+    }
+    .marquee-track span { padding:0 .9rem; }
+    .marquee-track em { color:var(--acc); font-style:normal; padding:0 .15rem; }
+    .marquee-track .star { color:var(--hazard); font-style:normal; }
+    @keyframes marquee { to { transform:translateX(-100%); } }
+
+    nav { top:var(--marqueeH); border-top:2px solid var(--txt); }
+    body { padding-top:var(--marqueeH); }
+
+    .rec-indicator {
+      display:inline-flex; align-items:center; gap:.4rem;
+      font-family:var(--ff-m); font-size:.7rem; font-weight:700;
+      color:var(--acc); letter-spacing:.14em; text-transform:uppercase;
+    }
+    .rec-dot {
+      width:9px; height:9px; border-radius:50%;
+      background:var(--acc);
+      box-shadow:0 0 0 2px rgba(232,64,48,.18);
+      animation:rec-pulse 1.2s ease-in-out infinite;
+    }
+    @keyframes rec-pulse {
+      0%,100% { opacity:1; transform:scale(1); }
+      50% { opacity:.3; transform:scale(.82); }
+    }
+
+    /* Brutalist hard-offset shadows on CTAs */
+    .btn-pay, .btn-shop {
+      border:2px solid var(--txt) !important;
+      box-shadow:4px 4px 0 var(--txt);
+    }
+    .btn-pay:hover:not(:disabled) { transform:translate(-2px,-2px); box-shadow:6px 6px 0 var(--txt); }
+    .btn-shop:hover { transform:translate(-2px,-2px) !important; box-shadow:6px 6px 0 var(--txt) !important; }
+
+    /* Hazard tape divider */
+    .hazard-divider {
+      height:16px;
+      background:repeating-linear-gradient(
+        -45deg,
+        var(--hazard) 0, var(--hazard) 18px,
+        var(--txt) 18px, var(--txt) 36px
+      );
+      border-top:2px solid var(--txt);
+      border-bottom:2px solid var(--txt);
+      position:relative;
+    }
+    .hazard-divider::before,
+    .hazard-divider::after {
+      content:'●'; position:absolute; top:50%; transform:translateY(-50%);
+      color:var(--bg); font-size:.5rem;
+      width:14px; height:14px; line-height:10px; text-align:center;
+      background:var(--txt); border-radius:50%; border:2px solid var(--bg);
+    }
+    .hazard-divider::before { left:24px; }
+    .hazard-divider::after { right:24px; }
+
+    /* Heavier card borders */
+    .cart-item, .checkout-box, .order-summary { border-width:2px; }
+
+    .footer-barcode {
+      display:inline-flex; flex-direction:column; align-items:center; gap:.25rem;
+    }
+    .barcode {
+      height:28px; width:110px;
+      background:repeating-linear-gradient(
+        to right,
+        var(--txt) 0, var(--txt) 1px,
+        transparent 1px, transparent 3px,
+        var(--txt) 3px, var(--txt) 5px,
+        transparent 5px, transparent 7px,
+        var(--txt) 7px, var(--txt) 8px,
+        transparent 8px, transparent 11px,
+        var(--txt) 11px, var(--txt) 13px,
+        transparent 13px, transparent 16px,
+        var(--txt) 16px, var(--txt) 17px,
+        transparent 17px, transparent 19px
+      );
+    }
+    .barcode-serial {
+      font-family:var(--ff-m); font-size:.55rem; letter-spacing:.18em;
+      color:var(--muted); text-transform:uppercase;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:960px){
+      .cart-page{grid-template-columns:1fr;padding:2.5rem 1.5rem 4rem}
+      .checkout-col{position:static}
+    }
+    @media(max-width:600px){
+      nav{padding:0 1rem}
+      :root { --marqueeH:22px; }
+      .marquee{font-size:.62rem;letter-spacing:.14em}
+      .rec-indicator span:not(.rec-dot){display:none}
+      .hazard-divider{height:12px}
+      .hazard-divider::before,.hazard-divider::after{width:10px;height:10px}
+      .cart-page{padding:2rem 1rem 4rem;gap:2rem}
+      .form-row{grid-template-columns:1fr}
+      .ci-thumb{width:68px}
+      .cart-item{gap:1rem;padding:1rem}
+      .ci-rm{opacity:.6}
+      footer{flex-direction:column;align-items:flex-start;padding:1.5rem 1rem}
+    }
+    @media(max-width:400px){
+      .ci-thumb{width:56px}
+      .co-body{padding:1.2rem}
+    }
+  </style>
+</head>
+<body data-style="1">
+
+<div class="crt-lines" aria-hidden="true"></div>
+
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <span class="star">★</span><span>TAPED UP</span><span class="star">★</span><span>CHECKOUT</span><span class="star">★</span><span>SINCE <em>1996</em></span><span class="star">★</span><span>100% ANALOG</span><span class="star">★</span><span>SHIP WORLDWIDE</span><span class="star">★</span><span>HAND DUBBED</span><span class="star">★</span><span>TAPED UP</span><span class="star">★</span><span>CHECKOUT</span><span class="star">★</span><span>SINCE <em>1996</em></span><span class="star">★</span><span>100% ANALOG</span><span class="star">★</span><span>SHIP WORLDWIDE</span><span class="star">★</span>
+  </div>
+</div>
+
+<nav>
+  <a href="index.html" class="nav-logo">TAPED<em> UP</em></a>
+  <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;justify-content:flex-end">
+    <div class="rec-indicator"><span class="rec-dot"></span><span>REC</span></div>
+    <button class="settings-toggle" id="langTog" onclick="cycleLang()" title="Language">EN</button>
+    <button class="settings-toggle" id="styleTog" onclick="cycleStyle()" title="Style">Aa<sup id="styleNum">1</sup></button>
+    <a href="index.html" class="nav-back" data-tx="nav.shop">← Keep Shopping</a>
+  </div>
+</nav>
+
+<main class="cart-page">
+  <!-- ═════════ LEFT: Items ═════════ -->
+  <div class="items-col">
+    <h1 data-tx="cart.title">Your Cart</h1>
+    <p class="items-sub" id="itemsSub">Loading…</p>
+
+    <div id="emptyMsg" class="cart-empty-page" style="display:none">
+      <span class="ce-icon">⏮</span>
+      <p class="ce-txt" data-tx="cart.empty.text">No tapes yet. Time to build something.</p>
+      <a href="index.html" class="btn-shop" data-tx="cart.empty.btn">▶ Start Customizing</a>
+    </div>
+
+    <div id="cartItems"></div>
+
+    <div class="order-summary" id="orderSummary" style="display:none">
+      <div class="os-row">
+        <span class="os-lbl" data-tx="sum.subtotal">Subtotal</span>
+        <span class="os-val" id="osSubtotal">$0.00</span>
+      </div>
+      <div class="os-row">
+        <span class="os-lbl" data-tx="sum.shipping">Shipping</span>
+        <span class="os-val" style="color:var(--green)" data-tx="sum.free">Free</span>
+      </div>
+      <div class="os-row os-total">
+        <span class="os-lbl" data-tx="sum.total">Total</span>
+        <span class="os-val" id="osTotal">$0.00</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═════════ RIGHT: Checkout Form ═════════ -->
+  <div class="checkout-col">
+    <div class="checkout-box">
+      <div class="co-head">
+        <div class="co-head-title" data-tx="co.title">Checkout</div>
+      </div>
+      <div class="co-body" id="formBody">
+
+        <!-- Contact -->
+        <div class="form-section">
+          <div class="form-section-title" data-tx="co.contact">Contact</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" data-tx="co.firstname">First Name</label>
+              <input class="form-input" type="text" data-tx-ph="ph.first" placeholder="First" id="fFirstName">
+            </div>
+            <div class="form-group">
+              <label class="form-label" data-tx="co.lastname">Last Name</label>
+              <input class="form-input" type="text" data-tx-ph="ph.last" placeholder="Last" id="fLastName">
+            </div>
+          </div>
+          <div class="form-row full">
+            <div class="form-group">
+              <label class="form-label" data-tx="co.email">Email Address</label>
+              <input class="form-input" type="email" placeholder="you@example.com" id="fEmail">
+            </div>
+          </div>
+          <div class="form-row full">
+            <div class="form-group">
+              <label class="form-label" data-tx="co.phone">Phone (optional)</label>
+              <input class="form-input" type="tel" placeholder="+1 555 000 0000" id="fPhone">
+            </div>
+          </div>
+        </div>
+
+        <div class="co-divider"></div>
+
+        <!-- Shipping -->
+        <div class="form-section">
+          <div class="form-section-title" data-tx="co.shipping">Shipping Address</div>
+          <div class="form-row full">
+            <div class="form-group">
+              <label class="form-label" data-tx="co.address">Street Address</label>
+              <input class="form-input" type="text" data-tx-ph="ph.address" placeholder="123 Analog Way" id="fAddress">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" data-tx="co.city">City</label>
+              <input class="form-input" type="text" placeholder="London" id="fCity">
+            </div>
+            <div class="form-group">
+              <label class="form-label" data-tx="co.state">State / Province</label>
+              <input class="form-input" type="text" placeholder="England" id="fState">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" data-tx="co.zip">ZIP / Postal Code</label>
+              <input class="form-input" type="text" placeholder="EC1A 1BB" id="fZip">
+            </div>
+            <div class="form-group">
+              <label class="form-label" data-tx="co.country">Country</label>
+              <select class="form-select" id="fCountry">
+                <option value="" data-tx="co.country.placeholder">Select country…</option>
+                <option>United Kingdom</option>
+                <option>United States</option>
+                <option>Canada</option>
+                <option>Australia</option>
+                <option>Germany</option>
+                <option>France</option>
+                <option>Japan</option>
+                <option>Netherlands</option>
+                <option>Sweden</option>
+                <option>Other</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="co-divider"></div>
+
+        <!-- Note -->
+        <div class="form-section">
+          <div class="form-section-title" data-tx="co.note">Order Note (optional)</div>
+          <div class="form-row full">
+            <div class="form-group" style="margin-bottom:0">
+              <textarea class="form-input" id="fNote" data-tx-ph="co.note.placeholder" placeholder="Any special requests or questions…" rows="3" style="resize:vertical;min-height:70px"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-pay" id="payBtn" onclick="placeOrder()" disabled>
+          <span class="lock-icon">🔒</span> <span id="payBtnLabel" data-tx="co.placeorder">Place Order —</span> <span id="payTotal">$0.00</span>
+        </button>
+        <p class="pay-note" data-tx="co.paynote">
+          No payment is taken now. Our team will review your order and contact you to arrange payment and confirm production.
+        </p>
+      </div>
+
+      <!-- Success state -->
+      <div id="successState">
+        <div class="success-ring">✓</div>
+        <div class="success-title" data-tx="co.success.title">Order Received!</div>
+        <p class="success-sub" id="successMsg">
+          Thanks for your order! Our customer service team will review your full tape list and reach out to you to arrange payment and confirm production.
+        </p>
+        <div class="success-order" id="successOrderNum"></div>
+        <br>
+        <a href="index.html" class="btn-continue" data-tx="co.success.continue">← Build Another Tape</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="hazard-divider" aria-hidden="true"></div>
+
+<footer>
+  <span class="footer-logo">TAPED<em> UP</em></span>
+  <div class="footer-barcode" aria-hidden="true">
+    <div class="barcode"></div>
+    <div class="barcode-serial">TU-1996-A · NL/EN</div>
+  </div>
+  <span class="footer-txt" data-tx="footer.txt">© 2026 Taped Up. Built with analog love.</span>
+</footer>
+
+<script>
+/* ══════════════════════════════════════════════════════
+   EMAIL CONFIG
+   ─────────────────────────────────────────────────────
+   1. Go to https://formspree.io and create a free account.
+   2. Create a new form — paste your email address.
+   3. Copy the endpoint URL (looks like https://formspree.io/f/xxxxxxxx)
+   4. Replace the FORMSPREE_ENDPOINT value below with it.
+   ─────────────────────────────────────────────────────
+   On platforms like Netlify/Vercel you can also set this
+   via an environment variable and inject it at build time.
+══════════════════════════════════════════════════════ */
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/YOUR_FORM_ID';
+
+/* ─── DATA ─── */
+const COLORS = [
+  {id:'pitch',   name:'Pitch Black',  nameNL:'Gitzwart',     body:'#1C1814', label:'#282018', accent:'#D09050', lTxt:'#907060'},
+  {id:'arctic',  name:'Arctic White', nameNL:'Arctisch Wit', body:'#EDE9E0', label:'#E0DCD2', accent:'#C04830', lTxt:'#806050'},
+  {id:'cherry',  name:'Cherry Red',   nameNL:'Kersenrood',   body:'#7C1209', label:'#951609', accent:'#FF9860', lTxt:'#FFCCAA'},
+  {id:'cobalt',  name:'Cobalt',       nameNL:'Kobalt',       body:'#0C2060', label:'#112878', accent:'#5090E8', lTxt:'#88BBFF'},
+  {id:'forest',  name:'Forest',       nameNL:'Bos',          body:'#082A10', label:'#0C3616', accent:'#48A860', lTxt:'#78D090'},
+  {id:'sand',    name:'Desert Sand',  nameNL:'Woestijnzand', body:'#7E5228', label:'#966030', accent:'#EAC870', lTxt:'#F4E0A0'},
+  {id:'obsidian',name:'Obsidian',     nameNL:'Obsidiaan',    body:'#12101E', label:'#1A1830', accent:'#7870C8', lTxt:'#A898E8'},
+  {id:'chrome',  name:'Chrome',       nameNL:'Chroom',       body:'#686F78', label:'#808890', accent:'#D8E2EC', lTxt:'#FFFFFF'}
+];
+const SHAPES = [
+  {id:'classic', name:'Classic',  nameNL:'Klassiek'},
+  {id:'skeleton',name:'Skeleton', nameNL:'Skelet'},
+  {id:'sport',   name:'Sport',    nameNL:'Sport'}
+];
+const PRICE = 28.99;
+
+/* ─── I18N ─── */
+const I18N = {
+  en: {
+    'nav.shop':'← Keep Shopping',
+    'cart.title':'Your Cart','cart.empty':'Your cart is empty.',
+    'cart.empty.text':'No tapes yet. Time to build something.',
+    'cart.empty.btn':'▶ Start Customizing',
+    'sum.subtotal':'Subtotal','sum.shipping':'Shipping','sum.free':'Free','sum.total':'Total',
+    'co.title':'Checkout','co.contact':'Contact',
+    'co.firstname':'First Name','co.lastname':'Last Name',
+    'co.email':'Email Address','co.phone':'Phone (optional)',
+    'co.shipping':'Shipping Address','co.address':'Street Address',
+    'co.city':'City','co.state':'State / Province','co.zip':'ZIP / Postal Code','co.country':'Country',
+    'co.country.placeholder':'Select country…',
+    'co.note':'Order Note (optional)','co.note.placeholder':'Any special requests or questions…',
+    'co.placeorder':'Place Order —',
+    'co.paynote':'No payment is taken now. Our team will review your order and contact you to arrange payment and confirm production.',
+    'co.success.title':'Order Received!',
+    'co.success.msg':'Thanks for your order! Our customer service team will review your full tape list and reach out to you at <em class="success-highlight">{email}</em> to arrange payment and confirm production.',
+    'co.success.continue':'← Build Another Tape',
+    'co.sending':'Sending order…',
+    'count.tapes':'{n} tapes ready for production','count.tape':'{n} tape ready for production',
+    'ph.first':'First','ph.last':'Last','ph.address':'123 Analog Way',
+    'footer.txt':'© 2026 Taped Up. Built with analog love.'
+  },
+  nl: {
+    'nav.shop':'← Verder Winkelen',
+    'cart.title':'Jouw Winkelwagen','cart.empty':'Je winkelwagen is leeg.',
+    'cart.empty.text':'Nog geen cassettes. Tijd om iets te bouwen.',
+    'cart.empty.btn':'▶ Begin met Aanpassen',
+    'sum.subtotal':'Subtotaal','sum.shipping':'Verzending','sum.free':'Gratis','sum.total':'Totaal',
+    'co.title':'Afrekenen','co.contact':'Contact',
+    'co.firstname':'Voornaam','co.lastname':'Achternaam',
+    'co.email':'E-mailadres','co.phone':'Telefoon (optioneel)',
+    'co.shipping':'Verzendadres','co.address':'Straat',
+    'co.city':'Stad','co.state':'Provincie','co.zip':'Postcode','co.country':'Land',
+    'co.country.placeholder':'Kies een land…',
+    'co.note':'Opmerking (optioneel)','co.note.placeholder':'Speciale verzoeken of vragen…',
+    'co.placeorder':'Bestel —',
+    'co.paynote':'Er wordt nu geen betaling gedaan. Ons team beoordeelt je bestelling en neemt contact met je op om betaling en productie te regelen.',
+    'co.success.title':'Bestelling Ontvangen!',
+    'co.success.msg':'Bedankt voor je bestelling! Ons klantenserviceteam neemt contact met je op via <em class="success-highlight">{email}</em> om betaling en productie te bevestigen.',
+    'co.success.continue':'← Bouw Nog een Cassette',
+    'co.sending':'Bestelling wordt verzonden…',
+    'count.tapes':'{n} cassettes klaar voor productie','count.tape':'{n} cassette klaar voor productie',
+    'ph.first':'Voornaam','ph.last':'Achternaam','ph.address':'Hoofdstraat 1',
+    'footer.txt':'© 2026 Taped Up. Met analoge liefde gemaakt.'
+  }
+};
+let LANG = localStorage.getItem('tuLang') || 'en';
+const t = k => (I18N[LANG] && I18N[LANG][k]) || (I18N.en[k] || k);
+
+function applyLang() {
+  document.documentElement.lang = LANG;
+  document.querySelectorAll('[data-tx]').forEach(el => { el.innerHTML = t(el.dataset.tx); });
+  document.querySelectorAll('[data-tx-ph]').forEach(el => { el.placeholder = t(el.dataset.txPh); });
+  const code = LANG.toUpperCase();
+  const lt = document.getElementById('langTog'); if (lt) lt.textContent = code;
+  if (typeof renderCart === 'function') renderCart();
+}
+function cycleLang() {
+  LANG = LANG === 'en' ? 'nl' : 'en';
+  localStorage.setItem('tuLang', LANG);
+  applyLang();
+}
+
+/* ─── TYPOGRAPHY STYLE PICKER ─── */
+const STYLES = {
+  '1':{name:'Neon',     fonts:null},
+  '2':{name:'Editorial',fonts:'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Lora:wght@400;500&display=swap'},
+  '3':{name:'Tech',     fonts:'https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap'}
+};
+let STYLE = localStorage.getItem('tuStyle') || '1';
+
+function ensureStyleFonts(s) {
+  const def = STYLES[s];
+  if (!def || !def.fonts) return;
+  const id = 'fontStyle'+s;
+  if (document.getElementById(id)) return;
+  const l = document.createElement('link');
+  l.id = id; l.rel = 'stylesheet'; l.href = def.fonts;
+  document.head.appendChild(l);
+}
+function applyStyle() {
+  ensureStyleFonts(STYLE);
+  document.body.dataset.style = STYLE;
+  const sn = document.getElementById('styleNum'); if (sn) sn.textContent = STYLE;
+}
+function cycleStyle() {
+  STYLE = STYLE === '1' ? '2' : STYLE === '2' ? '3' : '1';
+  localStorage.setItem('tuStyle', STYLE);
+  applyStyle();
+}
+
+/* ─── CART STATE ─── */
+let cart = [];
+try { cart = JSON.parse(localStorage.getItem('tuCart') || '[]'); } catch(e) { cart=[]; }
+
+/* ─── SVG CASSETTE THUMBNAIL ─── */
+function makeCassetteThumb(colorId, shapeId, songs) {
+  const C = COLORS.find(c=>c.id===colorId) || COLORS[0];
+  const isSkel  = shapeId==='skeleton';
+  const isSport = shapeId==='sport';
+  const W=400, H=248, bRx=11;
+  const lblH = isSport?68:92;
+  const winH = isSport?118:98;
+  const winX=56, winY=16+lblH+14, winW=288, winRx=7;
+  const lx=winX+76, rx2=winX+winW-76;
+  const ry=winY+Math.round(winH*.54);
+  const rR=isSport?44:38;
+  const bodyFill=isSkel?'none':C.body;
+  const bodyStroke=isSkel?C.body:'none';
+  const winBg=isSkel?'rgba(0,0,0,.18)':'#0A0806';
+  const validSongs=(songs||[]).filter(s=>s&&s.trim()).slice(0,4);
+  const songLines=validSongs.map((s,i)=>`<text x="38" y="${16+22+i*11.5}" font-family="Courier New,monospace" font-size="9" fill="${C.lTxt}" opacity=".9">${i+1}. ${s.replace(/&/g,'&amp;').replace(/</g,'&lt;').slice(0,26)}</text>`).join('');
+
+  const reelSVG=(cx,cy,cls)=>{
+    const sps=[0,120,240].map(a=>{const r=a*Math.PI/180;const x1=(cx+Math.cos(r)*9).toFixed(1),y1=(cy+Math.sin(r)*9).toFixed(1),x2=(cx+Math.cos(r)*(rR-10)).toFixed(1),y2=(cy+Math.sin(r)*(rR-10)).toFixed(1);return`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${C.accent}AA" stroke-width="2.5" stroke-linecap="round"/>`;}).join('');
+    return`<circle cx="${cx}" cy="${cy}" r="${rR+2}" fill="rgba(0,0,0,.45)"/><circle cx="${cx}" cy="${cy}" r="${rR}" fill="${isSkel?'rgba(28,22,14,.55)':'#120F08'}" stroke="${C.accent}55" stroke-width="1.5"/><circle cx="${cx}" cy="${cy}" r="${rR-7}" fill="none" stroke="${C.accent}22" stroke-width="5"/><g class="${cls}">${sps}</g><circle cx="${cx}" cy="${cy}" r="11" fill="${isSkel?'rgba(28,22,14,.7)':'#181208'}" stroke="${C.accent}77" stroke-width="1.5"/><circle cx="${cx}" cy="${cy}" r="4.5" fill="${C.accent}" opacity=".85"/>`;
+  };
+  const screws=[[22,22],[378,22],[22,226],[378,226]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="7.5" fill="rgba(0,0,0,.32)" stroke="rgba(255,255,255,.05)" stroke-width="1"/><line x1="${x-3.5}" y1="${y}" x2="${x+3.5}" y2="${y}" stroke="rgba(255,255,255,.13)" stroke-width="1.5" stroke-linecap="round"/><line x1="${x}" y1="${y-3.5}" x2="${x}" y2="${y+3.5}" stroke="rgba(255,255,255,.13)" stroke-width="1.5" stroke-linecap="round"/>`).join('');
+
+  return`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
+    <defs><clipPath id="wclip-${colorId}-${shapeId}"><rect x="${winX}" y="${winY}" width="${winW}" height="${winH}" rx="${winRx}"/></clipPath></defs>
+    <rect x="4" y="4" width="${W-8}" height="${H-8}" rx="${bRx}" fill="${bodyFill}" stroke="${bodyStroke}" stroke-width="${isSkel?2:0}"/>
+    <rect x="4.5" y="4.5" width="${W-9}" height="${H-9}" rx="${bRx}" fill="none" stroke="rgba(255,255,255,${isSkel?.1:.06})" stroke-width="1"/>
+    <rect x="30" y="16" width="340" height="${lblH}" rx="5" fill="${C.label}"/>
+    <text x="38" y="30" font-family="Syne,sans-serif" font-size="9.5" font-weight="800" fill="${C.accent}" opacity=".9" letter-spacing="4">SIDE A</text>
+    <line x1="38" y1="34" x2="362" y2="34" stroke="${C.accent}" stroke-width=".5" opacity=".35"/>
+    ${validSongs.length?songLines:`<text x="38" y="46" font-family="Courier New,monospace" font-size="9" fill="${C.lTxt}" opacity=".28" font-style="italic">no tracks</text>`}
+    <rect x="${winX-3}" y="${winY-3}" width="${winW+6}" height="${winH+6}" rx="${winRx+2}" fill="rgba(0,0,0,.55)"/>
+    <rect x="${winX}" y="${winY}" width="${winW}" height="${winH}" rx="${winRx}" fill="${winBg}"/>
+    <g clip-path="url(#wclip-${colorId}-${shapeId})">${reelSVG(lx,ry,'reel-cw')}${reelSVG(rx2,ry,'reel-ccw')}</g>
+    <rect x="${winX}" y="${winY}" width="${winW}" height="${winH}" rx="${winRx}" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="1"/>
+    ${screws}
+  </svg>`;
+}
+
+/* ─── RENDER CART ─── */
+function renderCart() {
+  const itemsEl   = document.getElementById('cartItems');
+  const emptyEl   = document.getElementById('emptyMsg');
+  const summaryEl = document.getElementById('orderSummary');
+  const payBtn    = document.getElementById('payBtn');
+  const sub       = document.getElementById('itemsSub');
+
+  if (cart.length === 0) {
+    emptyEl.style.display   = '';
+    summaryEl.style.display = 'none';
+    payBtn.disabled         = true;
+    sub.textContent         = t('cart.empty');
+    itemsEl.innerHTML       = '';
+    syncPayTotal();
+    return;
+  }
+
+  emptyEl.style.display   = 'none';
+  summaryEl.style.display = '';
+  payBtn.disabled         = false;
+
+  const totalQty = cart.reduce((s,i)=>s+i.qty, 0);
+  sub.textContent = (totalQty===1 ? t('count.tape') : t('count.tapes')).replace('{n}', totalQty);
+
+  const trackWord = (n) => LANG==='nl' ? (n===1?'track':'tracks') : (n===1?'track':'tracks');
+  const noTracksLbl = LANG==='nl' ? 'Geen tracks' : 'No tracks added';
+
+  itemsEl.innerHTML = cart.map((item, idx) => {
+    const C = COLORS.find(c=>c.id===item.color)||COLORS[0];
+    const S = SHAPES.find(s=>s.id===item.shape)||SHAPES[0];
+    const cName = LANG==='nl' ? (C.nameNL||C.name) : C.name;
+    const sName = LANG==='nl' ? (S.nameNL||S.name) : S.name;
+    const linePrice = (PRICE * item.qty).toFixed(2);
+    const validSongs = (item.songs||[]).filter(s=>s.trim());
+    const tracksDisplay = validSongs.join(' · ') || noTracksLbl;
+    const thumb = makeCassetteThumb(item.color, item.shape, item.songs||[]);
+    return `<div class="cart-item" id="ci-${item.id}">
+      <div class="ci-thumb">${thumb}</div>
+      <div class="ci-details">
+        <div class="ci-name">${cName} / ${sName}</div>
+        <div class="ci-meta">${validSongs.length} ${trackWord(validSongs.length)} &nbsp;·&nbsp; SIDE A</div>
+        <div class="ci-tracks">${tracksDisplay}</div>
+        <div class="ci-row">
+          <span class="ci-price">$${linePrice}</span>
+          <div class="ci-qty">
+            <button class="qty-btn" onclick="changeQty(${item.id}, -1)">−</button>
+            <span class="qty-n">${item.qty}</span>
+            <button class="qty-btn" onclick="changeQty(${item.id}, +1)">+</button>
+          </div>
+        </div>
+      </div>
+      <button class="ci-rm" onclick="removeItem(${item.id})" title="Remove">✕</button>
+    </div>`;
+  }).join('');
+
+  syncPayTotal();
+}
+
+function syncPayTotal() {
+  const total = cart.reduce((s,i)=>s+PRICE*i.qty, 0).toFixed(2);
+  document.getElementById('osSubtotal').textContent = `$${total}`;
+  document.getElementById('osTotal').textContent    = `$${total}`;
+  document.getElementById('payTotal').textContent   = `$${total}`;
+}
+
+function changeQty(id, delta) {
+  const item = cart.find(i=>i.id===id);
+  if (!item) return;
+  item.qty = Math.max(1, item.qty + delta);
+  localStorage.setItem('tuCart', JSON.stringify(cart));
+  renderCart();
+}
+
+function removeItem(id) {
+  cart = cart.filter(i=>i.id!==id);
+  localStorage.setItem('tuCart', JSON.stringify(cart));
+  renderCart();
+}
+
+/* ─── BUILD ORDER EMAIL BODY ─── */
+function buildOrderSummaryText(orderNum) {
+  const lines = [];
+  lines.push(`ORDER: ${orderNum}`);
+  lines.push(`DATE: ${new Date().toLocaleString()}`);
+  lines.push('');
+  lines.push('── CUSTOMER ──');
+  lines.push(`Name:    ${document.getElementById('fFirstName').value.trim()} ${document.getElementById('fLastName').value.trim()}`);
+  lines.push(`Email:   ${document.getElementById('fEmail').value.trim()}`);
+  const phone = document.getElementById('fPhone').value.trim();
+  if (phone) lines.push(`Phone:   ${phone}`);
+  lines.push('');
+  lines.push('── SHIPPING ──');
+  lines.push(document.getElementById('fAddress').value.trim());
+  lines.push(`${document.getElementById('fCity').value.trim()}, ${document.getElementById('fState').value.trim()} ${document.getElementById('fZip').value.trim()}`);
+  lines.push(document.getElementById('fCountry').value);
+  lines.push('');
+  lines.push('── TAPES ──');
+  cart.forEach((item, i) => {
+    const C = COLORS.find(c=>c.id===item.color)||COLORS[0];
+    const S = SHAPES.find(s=>s.id===item.shape)||SHAPES[0];
+    const tracks = (item.songs||[]).filter(s=>s.trim());
+    lines.push(`Tape ${i+1}: ${C.name} / ${S.name}  ×${item.qty}  ($${(PRICE*item.qty).toFixed(2)})`);
+    if (tracks.length) {
+      tracks.forEach((t, ti) => lines.push(`  ${ti+1}. ${t}`));
+    } else {
+      lines.push('  (no tracks)');
+    }
+    lines.push('');
+  });
+  const total = cart.reduce((s,i)=>s+PRICE*i.qty,0).toFixed(2);
+  lines.push(`── TOTAL: $${total} (shipping: FREE) ──`);
+  const note = document.getElementById('fNote').value.trim();
+  if (note) { lines.push(''); lines.push('── NOTE ──'); lines.push(note); }
+  return lines.join('\n');
+}
+
+/* ─── PLACE ORDER ─── */
+async function placeOrder() {
+  // Validate required fields
+  const required = ['fFirstName','fLastName','fEmail','fAddress','fCity','fZip'];
+  let allFilled = true;
+  required.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el.value.trim()) {
+      el.style.borderColor = 'var(--acc)';
+      el.style.boxShadow  = '0 0 0 3px rgba(232,64,48,.12)';
+      allFilled = false;
+    } else {
+      el.style.borderColor = '';
+      el.style.boxShadow   = '';
+    }
+  });
+  if (!allFilled) return;
+
+  const email = document.getElementById('fEmail').value.trim();
+  const orderNum = 'TU-' + Math.random().toString(36).substr(2,8).toUpperCase();
+
+  // Show loading state
+  const btn = document.getElementById('payBtn');
+  btn.disabled = true;
+  btn.classList.add('loading');
+  btn.innerHTML = `<div class="spinner"></div> ${t('co.sending')}`;
+
+  // Build payload (no card details sent — payment arranged separately)
+  const payload = {
+    _subject: `New Order ${orderNum} — TAPED UP`,
+    order_number: orderNum,
+    customer_name: `${document.getElementById('fFirstName').value.trim()} ${document.getElementById('fLastName').value.trim()}`,
+    customer_email: email,
+    customer_phone: document.getElementById('fPhone').value.trim() || 'not provided',
+    shipping_address: [
+      document.getElementById('fAddress').value.trim(),
+      `${document.getElementById('fCity').value.trim()}, ${document.getElementById('fState').value.trim()} ${document.getElementById('fZip').value.trim()}`,
+      document.getElementById('fCountry').value
+    ].join('\n'),
+    order_total: `$${cart.reduce((s,i)=>s+PRICE*i.qty,0).toFixed(2)}`,
+    note: document.getElementById('fNote').value.trim() || '—',
+    full_order_details: buildOrderSummaryText(orderNum)
+  };
+
+  // Send to Formspree (skip if placeholder not yet configured)
+  const isConfigured = FORMSPREE_ENDPOINT && !FORMSPREE_ENDPOINT.includes('YOUR_FORM_ID');
+  if (isConfigured) {
+    try {
+      await fetch(FORMSPREE_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    } catch (err) {
+      console.warn('Email send failed:', err);
+    }
+  } else {
+    console.warn('Formspree not configured. Set FORMSPREE_ENDPOINT in cart.html.');
+  }
+
+  // Clear cart
+  localStorage.removeItem('tuCart');
+  cart = [];
+
+  // Show success
+  document.getElementById('formBody').style.display = 'none';
+  const ss = document.getElementById('successState');
+  ss.classList.add('show');
+  document.getElementById('successOrderNum').textContent = (LANG==='nl'?'Bestelling #':'Order #')+orderNum;
+  document.getElementById('successMsg').innerHTML = t('co.success.msg').replace('{email}', email);
+}
+
+/* ─── INIT SETTINGS BEFORE FIRST RENDER ─── */
+applyStyle();
+applyLang();
+
+/* ─── INIT ─── */
+renderCart();
+</script>
+</body>
+</html>
