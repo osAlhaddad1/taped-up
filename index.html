@@ -6,644 +6,572 @@
   <title>TAPED UP — Custom Cassettes</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Instrument+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Archivo:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
     :root {
-      /* SYNTHWAVE / NEON ZINE PALETTE */
-      --bg:#150830;        /* deep saturated purple */
-      --bg2:#1F0E45;       /* lighter purple */
-      --bg3:#2A1660;       /* mid purple */
-      --surf:#1D0C3F;      /* primary card */
-      --surf2:#2A1458;     /* secondary card */
-      --bdr:#4A2A8F;       /* purple border */
-      --bdr2:#6840B8;      /* lighter border */
-      --txt:#F4ECFF;       /* warm off-white */
-      --txt2:#C0A8E8;      /* muted purple-cream */
-      --muted:#8870B8;     /* dark muted purple */
-      --acc:#FF1F7C;       /* hot neon pink */
-      --accH:#FF4FA0;      /* pink hover */
-      --gold:#C4FF3D;      /* electric lime (replaces gold) */
-      --goldH:#DDFF60;     /* lime hover */
-      --green:#00FF95;     /* neon mint */
-      --cyan:#00E8FF;      /* neon cyan */
-      --navH:62px; --r:8px; --rLg:16px;
+      /* J-CARD / PRINT SHOP PALETTE */
+      --paper:#F4EEE1;      /* warm paper */
+      --paper2:#ECE3D0;     /* deeper paper */
+      --ink:#1B1712;        /* near-black ink */
+      --ink2:#6B6052;       /* faded ink */
+      --line:#D9CEB9;       /* ruled line */
+      --acc:#FF4D00;        /* safety orange */
+      --accD:#E04400;
+      --ok:#1E7A4E;         /* stamp green */
+      --navH:64px;
       --ease:cubic-bezier(.4,0,.2,1);
       --spring:cubic-bezier(.34,1.56,.64,1);
-      --ff-d:'Syne',sans-serif;
-      --ff-m:'Courier Prime',monospace;
-      --ff-b:'Instrument Sans',sans-serif;
+      --ff-d:'Bricolage Grotesque',sans-serif;
+      --ff-m:'IBM Plex Mono',ui-monospace,monospace;
+      --ff-b:'Archivo',sans-serif;
     }
     html { scroll-behavior:smooth; }
     body {
-      background:var(--bg);
+      background:var(--paper);
       background-image:
-        radial-gradient(ellipse 80% 60% at 20% 0%, rgba(255,31,124,.12), transparent 60%),
-        radial-gradient(ellipse 70% 50% at 90% 100%, rgba(0,232,255,.10), transparent 55%);
-      color:var(--txt); font-family:var(--ff-b); line-height:1.6; overflow-x:hidden;
+        repeating-linear-gradient(0deg, transparent 0 31px, rgba(27,23,18,.035) 31px 32px);
+      color:var(--ink); font-family:var(--ff-b); line-height:1.6;
+      overflow-x:hidden;
     }
+    /* paper grain */
     body::after {
-      content:''; position:fixed; inset:0; z-index:9999; pointer-events:none; opacity:.07;
+      content:''; position:fixed; inset:0; z-index:9999; pointer-events:none; opacity:.05;
       background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-      background-size:200px;
-      mix-blend-mode:screen;
+      background-size:180px; mix-blend-mode:multiply;
     }
-    ::-webkit-scrollbar{width:5px} ::-webkit-scrollbar-track{background:var(--bg2)} ::-webkit-scrollbar-thumb{background:var(--acc);border-radius:3px}
-    h1,h2,h3,h4{font-family:var(--ff-d);line-height:1.05;letter-spacing:-.02em}
+    ::selection{background:var(--acc);color:var(--paper)}
+    ::-webkit-scrollbar{width:6px} ::-webkit-scrollbar-track{background:var(--paper2)} ::-webkit-scrollbar-thumb{background:var(--ink);border-radius:0}
+    h1,h2,h3,h4{font-family:var(--ff-d);line-height:1;letter-spacing:-.02em}
+    :focus-visible{outline:3px solid var(--acc);outline-offset:2px}
 
-    /* Language toggle in nav */
-    .lang-toggle{
-      display:inline-flex;align-items:center;justify-content:center;
-      min-width:42px;height:34px;padding:0 .7rem;
-      background:transparent;border:1px solid var(--bdr);border-radius:var(--r);
-      color:var(--txt2);cursor:pointer;
-      font-family:var(--ff-m);font-size:.72rem;font-weight:700;letter-spacing:.08em;
-      transition:all .18s var(--ease);
-    }
-    .lang-toggle:hover{border-color:var(--acc);color:var(--txt)}
-    .nav-mobile-row{display:flex;justify-content:space-between;align-items:center;padding:.9rem 0;border-bottom:1px solid var(--bdr);font-family:var(--ff-m);font-size:.85rem;color:var(--txt);letter-spacing:.04em}
-    .nav-mobile-row:last-child{border-bottom:none}
-
-    @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
-    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
     @keyframes popIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
-    @keyframes toastIn{from{opacity:0;transform:translateY(14px) scale(.9)}to{opacity:1;transform:none}}
-    @keyframes toastOut{from{opacity:1}to{opacity:0;transform:translateY(-10px) scale(.9)}}
-    @keyframes trackIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:none}}
+    @keyframes toastIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+    @keyframes toastOut{from{opacity:1}to{opacity:0;transform:translateY(-8px)}}
+    @keyframes ticker{to{transform:translateX(-50%)}}
 
-    /* ── NAV ───────────────────────────────────────── */
-    nav {
-      position:fixed; top:0; left:0; right:0; z-index:100;
+    /* ── HEADER ─────────────────────────────────── */
+    header {
+      position:sticky; top:0; z-index:100;
       height:var(--navH); display:flex; align-items:center; justify-content:space-between;
-      padding:0 2.5rem;
-      background:rgba(21,8,48,.92); backdrop-filter:blur(20px) saturate(140%);
-      border-bottom:1px solid var(--bdr);
+      padding:0 1.5rem;
+      background:var(--paper);
+      border-bottom:2px solid var(--ink);
     }
-    .nav-logo{font-family:var(--ff-d);font-size:1.15rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--txt);text-decoration:none;transition:opacity .2s}
-    .nav-logo em{color:var(--acc);font-style:normal}
-    .nav-logo:hover{opacity:.85}
-    .nav-links{display:flex;align-items:center;gap:2.25rem}
-    .nav-link{
-      position:relative;
-      font-family:var(--ff-b);font-size:.78rem;font-weight:500;letter-spacing:.12em;
-      text-transform:uppercase;color:var(--txt2);text-decoration:none;
-      padding:.4rem 0;transition:color .2s var(--ease);
+    .logo{display:flex;align-items:center;gap:.6rem;font-family:var(--ff-d);font-size:1.25rem;font-weight:800;letter-spacing:.02em;text-transform:uppercase;color:var(--ink);text-decoration:none}
+    .logo-mark{width:30px;height:20px;border:2px solid var(--ink);position:relative;background:var(--acc);flex-shrink:0}
+    .logo-mark::before,.logo-mark::after{content:'';position:absolute;top:50%;transform:translateY(-50%);width:6px;height:6px;border:1.5px solid var(--ink);border-radius:50%;background:var(--paper)}
+    .logo-mark::before{left:3px}.logo-mark::after{right:3px}
+    .hdr-right{display:flex;align-items:center;gap:.75rem}
+    .hdr-link{font-family:var(--ff-m);font-size:.78rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2);text-decoration:none;padding:.4rem .5rem}
+    .hdr-link:hover{color:var(--ink);text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:2px;text-decoration-color:var(--acc)}
+    .lang-tog{
+      font-family:var(--ff-m);font-size:.72rem;font-weight:600;letter-spacing:.06em;
+      background:transparent;border:2px solid var(--ink);color:var(--ink);
+      padding:.35rem .6rem;cursor:pointer;transition:all .15s var(--ease);
     }
-    .nav-link::after{
-      content:'';position:absolute;left:0;right:0;bottom:-2px;height:1px;
-      background:var(--acc);transform:scaleX(0);transform-origin:center;
-      transition:transform .25s var(--ease);
-    }
-    .nav-link:hover{color:var(--txt)}
-    .nav-link:hover::after{transform:scaleX(1)}
-    .nav-actions{display:flex;align-items:center;gap:.85rem}
+    .lang-tog:hover{background:var(--ink);color:var(--paper)}
     .cart-btn{
-      display:inline-flex;align-items:center;gap:.55rem;padding:.5rem 1.1rem;
-      background:transparent;border:1px solid var(--bdr);border-radius:var(--r);
-      color:var(--txt);font-family:var(--ff-b);font-size:.78rem;font-weight:500;
-      letter-spacing:.1em;text-transform:uppercase;
-      cursor:pointer;text-decoration:none;transition:all .2s var(--ease);
+      display:flex;align-items:center;gap:.55rem;padding:.45rem .9rem;
+      background:var(--ink);border:2px solid var(--ink);color:var(--paper);
+      font-family:var(--ff-m);font-size:.78rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+      text-decoration:none;transition:all .15s var(--ease);box-shadow:3px 3px 0 rgba(27,23,18,.25);
     }
-    .cart-btn:hover{border-color:var(--acc);background:rgba(255,31,124,.06)}
+    .cart-btn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 rgba(27,23,18,.3)}
     .cart-count{
       display:inline-flex;align-items:center;justify-content:center;
-      min-width:20px;height:20px;padding:0 5px;
-      background:var(--acc);color:#fff;border-radius:100px;
-      font-family:var(--ff-d);font-size:.66rem;font-weight:800;
-      transition:transform .3s var(--spring);
+      min-width:20px;height:20px;padding:0 4px;background:var(--acc);color:var(--paper);
+      font-family:var(--ff-d);font-size:.68rem;font-weight:800;transition:transform .3s var(--spring);
     }
     .cart-count.bump{animation:popIn .35s var(--spring)}
 
-    /* ── HAMBURGER ──────────────────────────────────── */
-    .nav-ham{
-      display:none;flex-direction:column;gap:5px;
-      background:transparent;border:none;cursor:pointer;padding:6px;
-    }
-    .nav-ham span{display:block;width:22px;height:2px;background:var(--txt);border-radius:1px;transition:all .25s var(--ease)}
-    .nav-ham.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
-    .nav-ham.open span:nth-child(2){opacity:0;transform:scaleX(0)}
-    .nav-ham.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
-
-    .nav-mobile{
-      display:none;position:fixed;top:var(--navH);left:0;right:0;
-      background:var(--surf);border-bottom:1px solid var(--bdr);
-      padding:0 1.5rem 1rem;z-index:99;
-      box-shadow:0 8px 24px rgba(0,0,0,.08);
-    }
-    .nav-mobile.open{display:block}
-    .nav-mobile-link{
-      display:block;padding:.9rem 0;
-      border-bottom:1px solid var(--bdr);
-      color:var(--txt);text-decoration:none;
-      font-family:var(--ff-m);font-size:.9rem;letter-spacing:.06em;
-    }
-    .nav-mobile-link:last-child{border-bottom:none}
-
-    /* ── HERO ──────────────────────────────────────── */
-    #hero{min-height:100vh;display:flex;align-items:center;padding-top:var(--navH);position:relative;overflow:hidden}
-    .hero-bg{position:absolute;inset:0;z-index:0;overflow:hidden}
-    .orb{position:absolute;border-radius:50%;filter:blur(110px);opacity:.32}
-    .orb-1{width:700px;height:700px;background:var(--acc);top:-200px;left:-150px}
-    .orb-2{width:500px;height:500px;background:var(--cyan);bottom:-150px;right:-100px}
-    .tape-stripe{position:absolute;left:0;right:0;height:1px;background:repeating-linear-gradient(90deg,var(--gold) 0,var(--gold) 28px,transparent 28px,transparent 56px);opacity:.18}
-    .tape-stripe:nth-child(3){top:22%}.tape-stripe:nth-child(4){top:58%}.tape-stripe:nth-child(5){top:82%}
-
+    /* ── HERO ───────────────────────────────────── */
+    #hero{position:relative;overflow:hidden;border-bottom:2px solid var(--ink)}
     .hero-inner{
-      position:relative;z-index:1;max-width:1360px;margin:0 auto;width:100%;
-      padding:4rem 2rem;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;
+      max-width:1280px;margin:0 auto;padding:4.5rem 2rem 4rem;
+      display:grid;grid-template-columns:1.05fr .95fr;gap:3rem;align-items:center;
     }
-    .hero-cas-wrap{
-      display:flex;justify-content:center;align-items:center;
-      width:min(520px,88vw);margin:0 auto;
+    .hero-kicker{
+      display:inline-flex;align-items:center;gap:.6rem;
+      font-family:var(--ff-m);font-size:.72rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
+      color:var(--acc);margin-bottom:1.6rem;animation:fadeUp .5s var(--ease) .05s both;
     }
-    #heroCasCanvas{width:100%;display:block;cursor:none}
-
-    .hero-text{max-width:540px}
-    .hero-pill{
-      display:inline-flex;align-items:center;gap:.5rem;padding:.32rem .9rem;
-      background:rgba(255,31,124,.14);border:1px solid rgba(255,31,124,.5);border-radius:100px;
-      font-family:var(--ff-m);font-size:.72rem;letter-spacing:.1em;color:var(--acc);text-transform:uppercase;
-      margin-bottom:1.4rem;animation:fadeUp .6s var(--ease) .1s both;
-      box-shadow:0 0 24px rgba(255,31,124,.25);
+    .hero-kicker::before{content:'';width:34px;height:2px;background:var(--acc)}
+    .hero-title{
+      font-size:clamp(3.4rem,9vw,7.8rem);font-weight:800;letter-spacing:-.035em;line-height:.9;
+      text-transform:uppercase;margin-bottom:1.5rem;animation:fadeUp .5s var(--ease) .12s both;
     }
-    .hero-pill::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--acc);box-shadow:0 0 8px var(--acc);animation:pulse 2s ease-in-out infinite}
-    .hero-title{font-size:clamp(3rem,8vw,7.5rem);font-weight:800;line-height:.92;margin-bottom:1.4rem;animation:fadeUp .6s var(--ease) .2s both;letter-spacing:-.04em}
-    .hero-title .slash{color:var(--gold);display:block;text-shadow:0 0 24px rgba(196,255,61,.45)}
-    .hero-title .sub{font-size:.34em;color:var(--cyan);font-weight:400;font-style:italic;display:block;margin-top:.4rem;letter-spacing:.02em}
-    .hero-desc{font-size:1.05rem;color:var(--txt2);line-height:1.75;font-weight:300;margin-bottom:2.2rem;animation:fadeUp .6s var(--ease) .3s both}
-    .hero-cta{display:flex;gap:1rem;flex-wrap:wrap;animation:fadeUp .6s var(--ease) .4s both}
-    .btn-primary{
-      display:inline-flex;align-items:center;gap:.6rem;padding:.82rem 1.9rem;
-      background:var(--acc);color:#fff;border:none;border-radius:var(--r);
-      font-family:var(--ff-d);font-size:.9rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
-      cursor:pointer;text-decoration:none;transition:all .2s var(--ease);
+    .hero-title .hit{color:var(--acc);text-shadow:4px 4px 0 var(--ink)}
+    .hero-sub{
+      font-family:var(--ff-m);font-style:italic;font-size:.95rem;color:var(--ink2);
+      margin-bottom:1.1rem;animation:fadeUp .5s var(--ease) .18s both;
     }
-    .btn-primary:hover{background:var(--accH);transform:translateY(-2px);box-shadow:0 8px 28px rgba(255,31,124,.55), 0 0 40px rgba(255,31,124,.3)}
-    .btn-ghost{
-      display:inline-flex;align-items:center;gap:.5rem;padding:.82rem 1.5rem;
-      background:transparent;color:var(--txt2);border:1px solid var(--bdr);border-radius:var(--r);
-      font-size:.88rem;cursor:pointer;text-decoration:none;transition:all .2s var(--ease);
+    .hero-desc{font-size:1.02rem;color:var(--ink);max-width:30rem;line-height:1.7;margin-bottom:2.2rem;animation:fadeUp .5s var(--ease) .24s both}
+    .hero-cta{display:flex;gap:.9rem;flex-wrap:wrap;animation:fadeUp .5s var(--ease) .3s both}
+
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:.6rem;
+      font-family:var(--ff-d);font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+      text-decoration:none;cursor:pointer;transition:all .15s var(--ease);
+      border:2px solid var(--ink);
     }
-    .btn-ghost:hover{border-color:var(--bdr2);color:var(--txt)}
-    .hero-stats{display:flex;gap:2rem;flex-wrap:wrap;margin-top:2.8rem;padding-top:2rem;border-top:1px solid var(--bdr);animation:fadeUp .6s var(--ease) .5s both}
-    .stat-n{font-family:var(--ff-d);font-size:1.5rem;font-weight:800}
-    .stat-l{font-family:var(--ff-m);font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+    .btn-solid{background:var(--acc);color:var(--paper);padding:.85rem 1.8rem;font-size:.92rem;box-shadow:4px 4px 0 var(--ink)}
+    .btn-solid:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink)}
+    .btn-solid:active{transform:translate(0,0);box-shadow:2px 2px 0 var(--ink)}
+    .btn-line{background:var(--paper);color:var(--ink);padding:.85rem 1.5rem;font-size:.92rem;box-shadow:4px 4px 0 rgba(27,23,18,.2)}
+    .btn-line:hover{background:var(--ink);color:var(--paper);transform:translate(-2px,-2px);box-shadow:6px 6px 0 rgba(27,23,18,.25)}
 
-    /* ── CUSTOMIZER ────────────────────────────────── */
-    #customizer{padding:7rem 2rem;background:var(--bg2)}
-    .cust-head{text-align:center;margin-bottom:4rem}
-    .cust-title{font-size:clamp(2rem,4vw,3.2rem);font-weight:800;margin-bottom:.75rem}
-    .cust-sub{font-family:var(--ff-m);font-size:.82rem;color:var(--muted);letter-spacing:.06em}
-
-    .steps-bar{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:3.5rem}
-    .step-item{display:flex;align-items:center;gap:.5rem}
-    .step-dot{
-      width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-      font-family:var(--ff-d);font-size:.72rem;font-weight:800;
-      border:2px solid var(--bdr);color:var(--muted);background:var(--surf);
-      transition:all .3s var(--ease);position:relative;z-index:1;
+    .hero-stats{
+      display:flex;margin-top:3rem;border:2px solid var(--ink);background:var(--paper2);
+      animation:fadeUp .5s var(--ease) .36s both;box-shadow:5px 5px 0 rgba(27,23,18,.15);
     }
-    .step-item.active .step-dot{border-color:var(--acc);background:var(--acc);color:#fff}
-    .step-item.done   .step-dot{border-color:var(--green);background:var(--green);color:#fff}
-    .step-lbl{font-family:var(--ff-m);font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);transition:color .3s}
-    .step-item.active .step-lbl,.step-item.done .step-lbl{color:var(--txt)}
-    .step-conn{width:52px;height:1px;background:var(--bdr);margin:0 .4rem;position:relative;overflow:hidden}
-    .step-conn.done::after{content:'';position:absolute;inset:0;background:var(--green)}
+    .hero-stats > div{flex:1;text-align:center;padding:.9rem .4rem;border-right:2px solid var(--ink)}
+    .hero-stats > div:last-child{border-right:none}
+    .stat-n{font-family:var(--ff-d);font-size:1.4rem;font-weight:800;letter-spacing:-.02em}
+    .stat-l{font-family:var(--ff-m);font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;color:var(--ink2)}
 
-    .cust-layout{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:460px 1fr;gap:4rem;align-items:start}
-    .cust-sticky{position:sticky;top:calc(var(--navH) + 1.5rem)}
-
-    .preview-canvas-wrap{
-      width:100%;border-radius:var(--rLg);overflow:hidden;
-      background:linear-gradient(135deg,#0F051F 0%,#1F0E45 60%,#2A1660 100%);
-      box-shadow:0 12px 40px rgba(0,0,0,.5),0 0 0 1px var(--bdr2),inset 0 0 60px rgba(255,31,124,.06);
-      margin-bottom:1.4rem;
+    /* hero cassette plate */
+    .hero-plate{position:relative;animation:fadeUp .6s var(--ease) .2s both}
+    .hero-plate-frame{
+      position:relative;padding:1.2rem;
+      border:2px dashed var(--ink2);
     }
-    #prevCasCanvas{width:100%;display:block;cursor:crosshair}
-
-    .preview-meta{
-      padding:1.2rem 1.4rem;background:var(--surf);border:1px solid var(--bdr);border-radius:var(--rLg);
-      display:flex;flex-direction:column;gap:.5rem;
+    .reg{position:absolute;width:14px;height:14px;border:2px solid var(--ink)}
+    .reg.tl{top:-2px;left:-2px;border-right:none;border-bottom:none}
+    .reg.tr{top:-2px;right:-2px;border-left:none;border-bottom:none}
+    .reg.bl{bottom:-2px;left:-2px;border-right:none;border-top:none}
+    .reg.br{bottom:-2px;right:-2px;border-left:none;border-top:none}
+    #heroCasCanvas{width:100%;display:block;cursor:grab;filter:drop-shadow(0 22px 22px rgba(27,23,18,.28))}
+    .plate-caption{
+      display:flex;justify-content:space-between;margin-top:.9rem;
+      font-family:var(--ff-m);font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink2);
     }
-    .meta-row{display:flex;justify-content:space-between;align-items:center}
-    .meta-lbl{font-family:var(--ff-m);font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
-    .meta-val{font-family:var(--ff-d);font-size:.82rem;font-weight:700}
-    .meta-price{font-family:var(--ff-d);font-size:1.5rem;font-weight:800;color:var(--gold)}
-
-    .step-panel{display:none}
-    .step-panel.active{display:block;animation:fadeUp .4s var(--ease) both}
-    .panel-title{font-size:1.65rem;font-weight:800;margin-bottom:.35rem}
-    .panel-desc{font-family:var(--ff-m);font-size:.78rem;color:var(--muted);margin-bottom:2rem}
-
-    .color-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.85rem;margin-bottom:2rem}
-    .color-swatch{position:relative;aspect-ratio:1;border-radius:var(--rLg);cursor:pointer;border:2px solid transparent;overflow:hidden;transition:all .2s var(--ease)}
-    .color-swatch:hover{transform:scale(1.06)}
-    .color-swatch.sel{border-color:var(--gold);box-shadow:0 0 0 3px rgba(196,255,61,.25),0 0 24px rgba(196,255,61,.4)}
-    .color-swatch.sel::after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(21,8,48,.5);color:var(--gold);font-size:1.2rem;font-weight:700}
-    .swatch-name{display:block;margin-top:.4rem;font-family:var(--ff-m);font-size:.66rem;text-align:center;color:var(--muted);letter-spacing:.04em}
-
-    .shape-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2rem}
-    .shape-card{padding:1.2rem 1rem;background:var(--surf);border:2px solid var(--bdr);border-radius:var(--rLg);cursor:pointer;transition:all .2s var(--ease);text-align:center}
-    .shape-card:hover{border-color:var(--bdr2);transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.08)}
-    .shape-card.sel{border-color:var(--acc);background:rgba(255,31,124,.12)}
-    .shape-mini{width:100%;height:44px;margin-bottom:.7rem;display:flex;align-items:center;justify-content:center}
-    .shape-name{font-family:var(--ff-d);font-size:.95rem;font-weight:700;margin-bottom:.2rem}
-    .shape-desc{font-family:var(--ff-m);font-size:.65rem;color:var(--muted);line-height:1.45}
-
-    .track-box{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--rLg);overflow:hidden;margin-bottom:2rem}
-    .track-box-head{display:flex;align-items:center;justify-content:space-between;padding:.8rem 1.15rem;background:var(--bg3);border-bottom:1px solid var(--bdr)}
-    .track-box-lbl{font-family:var(--ff-d);font-size:.88rem;font-weight:800;letter-spacing:.08em}
-    .track-cnt{font-family:var(--ff-m);font-size:.66rem;color:var(--muted)}
-    .track-list{padding:.65rem .85rem;min-height:180px}
-    .track-item{display:flex;align-items:center;gap:.45rem;padding:.3rem .35rem;border-radius:4px;animation:trackIn .3s var(--spring) both}
-    .track-n{font-family:var(--ff-m);font-size:.68rem;color:var(--muted);width:1.4rem;flex-shrink:0}
-    .track-inp{flex:1;background:transparent;border:none;border-bottom:1px solid var(--bdr);color:var(--txt);font-family:var(--ff-m);font-size:.82rem;padding:.2rem 0;outline:none;transition:border-color .2s}
-    .track-inp:focus{border-bottom-color:var(--acc)}
-    .track-inp::placeholder{color:var(--muted);font-style:italic}
-    .track-del{width:18px;height:18px;background:transparent;border:none;border-radius:50%;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0;transition:all .15s;opacity:.5}
-    .track-del:hover{background:rgba(255,31,124,.18);color:var(--acc);opacity:1}
-    .add-track{display:flex;align-items:center;justify-content:center;gap:.4rem;margin:.4rem .85rem .85rem;width:calc(100% - 1.7rem);padding:.5rem;background:transparent;border:1px dashed var(--bdr);border-radius:var(--r);color:var(--muted);font-family:var(--ff-m);font-size:.75rem;cursor:pointer;transition:all .2s}
-    .add-track:hover{border-color:var(--acc);color:var(--acc)}
-
-    .step-actions{display:flex;justify-content:space-between;align-items:center;padding-top:1.5rem;border-top:1px solid var(--bdr);margin-top:1.5rem}
-    .btn-next{display:inline-flex;align-items:center;gap:.5rem;padding:.72rem 1.75rem;background:var(--acc);color:#fff;border:none;border-radius:var(--r);font-family:var(--ff-d);font-size:.88rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:all .2s var(--ease)}
-    .btn-next:hover{background:var(--accH);transform:translateY(-1px);box-shadow:0 5px 18px rgba(255,31,124,.55), 0 0 32px rgba(255,31,124,.25)}
-    .btn-back{display:inline-flex;align-items:center;gap:.4rem;padding:.72rem 1.25rem;background:transparent;border:1px solid var(--bdr);border-radius:var(--r);color:var(--muted);font-size:.88rem;cursor:pointer;transition:all .2s}
-    .btn-back:hover{border-color:var(--bdr2);color:var(--txt)}
-    .btn-addcart{display:inline-flex;align-items:center;gap:.6rem;padding:.88rem 2.2rem;background:var(--gold);color:#15082F;border:none;border-radius:var(--r);font-family:var(--ff-d);font-size:1rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:all .2s var(--ease)}
-    .btn-addcart:hover{background:var(--goldH);transform:translateY(-2px);box-shadow:0 8px 28px rgba(196,255,61,.55), 0 0 40px rgba(196,255,61,.3)}
-
-    /* ── TOASTS ────────────────────────────────────── */
-    #toasts{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);z-index:500;display:flex;flex-direction:column;gap:.45rem;align-items:center}
-    .toast{display:flex;align-items:center;gap:.65rem;padding:.65rem 1.4rem;background:var(--surf2);border:1px solid var(--gold);border-radius:100px;font-family:var(--ff-m);font-size:.82rem;color:var(--txt);box-shadow:0 8px 28px rgba(0,0,0,.45),0 0 28px rgba(196,255,61,.15);animation:toastIn .4s var(--spring) both;white-space:nowrap}
-    .toast.success{border-color:var(--green);box-shadow:0 8px 28px rgba(0,0,0,.45),0 0 28px rgba(0,255,149,.3)}
-    .toast.removing{animation:toastOut .3s var(--ease) both}
-
-    /* ── FOOTER ────────────────────────────────────── */
-    footer{border-top:1px solid var(--bdr);padding:2.2rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
-    .footer-logo{font-family:var(--ff-d);font-size:.9rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-    .footer-logo em{color:var(--acc);font-style:normal}
-    .footer-txt{font-family:var(--ff-m);font-size:.68rem;color:var(--muted);letter-spacing:.06em}
-
-    /* ════════════ RETRO / EDGY ════════════ */
-    :root {
-      --pink:#FF1F7C; --cyan:#00C8EC; --hazard:#FFD200;
-    }
-    /* Halftone dot overlay (light on dark) */
-    body::before {
-      content:''; position:fixed; inset:0; pointer-events:none; z-index:9998;
-      background-image:radial-gradient(circle,rgba(255,255,255,.06) .85px,transparent 1.5px);
-      background-size:5px 5px;
-      opacity:.6;
-    }
-    /* Stronger VHS noise */
-    body::after { opacity:.07; mix-blend-mode:screen; }
-
-    /* Subtle CRT scanlines */
-    .crt-lines {
-      position:fixed; inset:0; pointer-events:none; z-index:9997;
-      background-image:repeating-linear-gradient(0deg, rgba(0,0,0,.18) 0, rgba(0,0,0,.18) 1px, transparent 1px, transparent 3px);
-      mix-blend-mode:multiply; opacity:.4;
+    .plate-caption em{font-style:normal;color:var(--acc)}
+    .hero-sticker{
+      position:absolute;top:-14px;right:6px;z-index:3;transform:rotate(6deg);
+      background:var(--ink);color:var(--paper);
+      font-family:var(--ff-m);font-size:.66rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
+      padding:.4rem .9rem;box-shadow:3px 3px 0 rgba(27,23,18,.25);
     }
 
+    /* ── TICKER ─────────────────────────────────── */
+    .ticker{
+      background:var(--ink);color:var(--paper);overflow:hidden;
+      border-bottom:2px solid var(--ink);
+      font-family:var(--ff-m);font-size:.7rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;
+      padding:.5rem 0;white-space:nowrap;
+    }
+    .ticker-track{display:inline-flex;animation:ticker 38s linear infinite}
+    .ticker-track span{padding:0 1.4rem}
+    .ticker-track .tk-acc{color:var(--acc)}
 
-    /* Brutalist hard-offset shadows on CTAs */
-    .btn-primary, .btn-next, .btn-addcart, .btn-shop, .btn-pay {
-      border:2px solid var(--txt) !important;
-      box-shadow:4px 4px 0 var(--txt);
-    }
-    .btn-primary:hover, .btn-next:hover, .btn-shop:hover {
-      transform:translate(-2px,-2px) !important;
-      box-shadow:6px 6px 0 var(--txt) !important;
-    }
-    .btn-addcart:hover { transform:translate(-2px,-2px); box-shadow:6px 6px 0 var(--txt); }
-    .btn-pay:hover:not(:disabled) { transform:translate(-2px,-2px); box-shadow:6px 6px 0 var(--txt); }
+    /* ── BUILDER ────────────────────────────────── */
+    #builder{padding:5.5rem 2rem 6rem;max-width:1280px;margin:0 auto}
+    .build-head{margin-bottom:3rem;display:flex;align-items:flex-end;justify-content:space-between;gap:2rem;flex-wrap:wrap}
+    .build-title{font-size:clamp(2.2rem,5vw,3.6rem);font-weight:800;text-transform:uppercase;letter-spacing:-.025em}
+    .build-title .hit{color:var(--acc)}
+    .build-sub{font-family:var(--ff-m);font-size:.78rem;color:var(--ink2);letter-spacing:.08em;max-width:24rem;text-align:right}
 
-    /* Chromatic aberration hero title */
-    .hero-title .slash {
-      text-shadow:
-        3px 3px 0 rgba(0,200,236,.22),
-        -3px -3px 0 rgba(255,31,124,.22);
-      transition:transform .2s var(--ease);
-    }
-    .hero-title:hover .slash {
-      animation:chrom-glitch .55s steps(5) infinite;
-    }
-    @keyframes chrom-glitch {
-      0%   { text-shadow:  3px 3px 0 var(--cyan), -3px -3px 0 var(--pink); transform:translateX(0); }
-      20%  { text-shadow: -4px 2px 0 var(--cyan),  4px -2px 0 var(--pink); transform:translateX(2px); }
-      40%  { text-shadow:  4px -3px 0 var(--cyan),-4px 3px 0 var(--pink); transform:translateX(-2px); }
-      60%  { text-shadow: -2px -4px 0 var(--cyan), 2px 4px 0 var(--pink); transform:translateX(1px); }
-      80%  { text-shadow:  2px 3px 0 var(--cyan), -2px -3px 0 var(--pink); transform:translateX(-1px); }
-      100% { text-shadow:  3px 3px 0 var(--cyan), -3px -3px 0 var(--pink); transform:translateX(0); }
-    }
+    .build-layout{display:grid;grid-template-columns:430px 1fr;gap:3rem;align-items:start}
+    .build-aside{position:sticky;top:calc(var(--navH) + 1.5rem)}
 
-    /* Hazard tape divider */
-    .hazard-divider {
-      height:16px;
-      background:repeating-linear-gradient(
-        -45deg,
-        var(--hazard) 0, var(--hazard) 18px,
-        var(--txt) 18px, var(--txt) 36px
-      );
-      border-top:2px solid var(--txt);
-      border-bottom:2px solid var(--txt);
-      position:relative;
+    /* preview card */
+    .preview-card{border:2px solid var(--ink);background:var(--paper);box-shadow:6px 6px 0 rgba(27,23,18,.18)}
+    .preview-head{
+      display:flex;justify-content:space-between;align-items:center;
+      padding:.55rem .9rem;background:var(--ink);color:var(--paper);
+      font-family:var(--ff-m);font-size:.66rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
     }
-    .hazard-divider::before,
-    .hazard-divider::after {
-      content:'●'; position:absolute; top:50%; transform:translateY(-50%);
-      color:var(--bg); font-size:.5rem;
-      width:14px; height:14px; line-height:10px; text-align:center;
-      background:var(--txt); border-radius:50%; border:2px solid var(--bg);
+    .preview-head em{font-style:normal;color:var(--acc)}
+    .preview-stage{
+      position:relative;background:var(--paper2);
+      background-image:repeating-linear-gradient(0deg,transparent 0 23px,rgba(27,23,18,.05) 23px 24px),
+                       repeating-linear-gradient(90deg,transparent 0 23px,rgba(27,23,18,.05) 23px 24px);
+      border-bottom:2px solid var(--ink);
     }
-    .hazard-divider::before { left:24px; }
-    .hazard-divider::after { right:24px; }
-
-    /* SIDE A sticker on hero */
-    .side-a-sticker {
-      position:absolute; top:calc(var(--navH) + 2rem); left:1.5rem; z-index:5;
-      transform:rotate(-10deg);
-      background:var(--hazard);
-      color:var(--txt);
-      border:2px solid var(--txt);
-      padding:.35rem 1rem;
-      font-family:var(--ff-d); font-weight:800;
-      font-size:.95rem;
-      letter-spacing:.18em;
-      box-shadow:4px 4px 0 var(--txt);
+    #prevCasCanvas{width:100%;display:block;cursor:grab;filter:drop-shadow(0 14px 14px rgba(27,23,18,.25))}
+    .stage-hint{
+      position:absolute;bottom:.5rem;left:.75rem;
+      font-family:var(--ff-m);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink2);
       pointer-events:none;
     }
-    @media(max-width:900px) { .side-a-sticker { display:none; } }
 
-    /* Heavier card borders — brutalist */
-    .preview-meta, .track-box, .shape-card { border-width:2px; }
-    .shape-card.sel { border-color:var(--gold); box-shadow:4px 4px 0 var(--acc), 0 0 24px rgba(196,255,61,.25); background:rgba(255,31,124,.10); }
-    .color-swatch.sel { box-shadow:0 0 0 3px var(--bg), 0 0 0 5px var(--gold), 4px 4px 0 var(--acc); }
+    /* spec sheet */
+    .spec-body{padding:1rem 1.1rem .4rem}
+    .spec-row{display:flex;justify-content:space-between;align-items:baseline;padding:.5rem 0;border-bottom:1px dashed var(--line)}
+    .spec-lbl{font-family:var(--ff-m);font-size:.64rem;text-transform:uppercase;letter-spacing:.14em;color:var(--ink2)}
+    .spec-val{font-family:var(--ff-m);font-size:.8rem;font-weight:600}
+    .spec-price-row{display:flex;justify-content:space-between;align-items:center;padding:.8rem 1.1rem}
+    .spec-price{font-family:var(--ff-d);font-size:1.7rem;font-weight:800;letter-spacing:-.02em}
+    .spec-price small{font-family:var(--ff-m);font-size:.6rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--ink2);display:block}
+    .btn-add{
+      display:flex;width:calc(100% - 2.2rem);margin:0 1.1rem 1.1rem;
+      padding:.95rem;background:var(--acc);color:var(--paper);
+      font-family:var(--ff-d);font-size:1rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;
+      border:2px solid var(--ink);cursor:pointer;align-items:center;justify-content:center;gap:.6rem;
+      transition:all .15s var(--ease);box-shadow:4px 4px 0 var(--ink);
+    }
+    .btn-add:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink)}
+    .btn-add:active{transform:none;box-shadow:2px 2px 0 var(--ink)}
 
-    /* Footer barcode + serial */
-    .footer-barcode {
-      display:inline-flex; flex-direction:column; align-items:center; gap:.25rem;
+    /* step tabs */
+    .step-tabs{display:flex;border:2px solid var(--ink);background:var(--paper);margin-bottom:1.75rem;box-shadow:4px 4px 0 rgba(27,23,18,.15)}
+    .step-tab{
+      flex:1;display:flex;align-items:center;gap:.65rem;padding:.85rem 1rem;
+      background:transparent;border:none;border-right:2px solid var(--ink);
+      font-family:var(--ff-d);font-size:.85rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;
+      color:var(--ink2);cursor:pointer;transition:all .15s var(--ease);
     }
-    .barcode {
-      height:28px; width:110px;
-      background:repeating-linear-gradient(
-        to right,
-        var(--txt) 0, var(--txt) 1px,
-        transparent 1px, transparent 3px,
-        var(--txt) 3px, var(--txt) 5px,
-        transparent 5px, transparent 7px,
-        var(--txt) 7px, var(--txt) 8px,
-        transparent 8px, transparent 11px,
-        var(--txt) 11px, var(--txt) 13px,
-        transparent 13px, transparent 16px,
-        var(--txt) 16px, var(--txt) 17px,
-        transparent 17px, transparent 19px
-      );
+    .step-tab:last-child{border-right:none}
+    .step-tab:hover{color:var(--ink);background:var(--paper2)}
+    .step-num{
+      display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;
+      width:24px;height:24px;border:2px solid currentColor;
+      font-family:var(--ff-m);font-size:.66rem;font-weight:600;
     }
-    .barcode-serial {
-      font-family:var(--ff-m); font-size:.55rem; letter-spacing:.18em;
-      color:var(--muted); text-transform:uppercase;
+    .step-tab.active{background:var(--ink);color:var(--paper)}
+    .step-tab.active .step-num{border-color:var(--acc);color:var(--acc)}
+    .step-tab.done .step-num{background:var(--ok);border-color:var(--ok);color:var(--paper)}
+
+    /* panels */
+    .panel{display:none;border:2px solid var(--ink);background:var(--paper);box-shadow:6px 6px 0 rgba(27,23,18,.12)}
+    .panel.active{display:block;animation:fadeUp .35s var(--ease) both}
+    .panel-head{padding:1.4rem 1.6rem 0}
+    .panel-title{font-size:1.5rem;font-weight:800;text-transform:uppercase;letter-spacing:-.01em;margin-bottom:.3rem}
+    .panel-desc{font-family:var(--ff-m);font-size:.74rem;color:var(--ink2);letter-spacing:.04em}
+    .panel-body{padding:1.4rem 1.6rem 1.6rem}
+
+    /* colour grid */
+    .color-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem}
+    .swatch{
+      position:relative;background:var(--paper);border:2px solid var(--ink);
+      padding:.4rem .4rem .5rem;cursor:pointer;text-align:left;
+      transition:all .15s var(--ease);font-family:inherit;
+    }
+    .swatch:hover{transform:translate(-2px,-2px);box-shadow:4px 4px 0 rgba(27,23,18,.25)}
+    .swatch-chip{aspect-ratio:4/3;border:1.5px solid rgba(27,23,18,.25);margin-bottom:.45rem;position:relative}
+    .swatch-name{font-family:var(--ff-m);font-size:.62rem;font-weight:500;letter-spacing:.04em;text-transform:uppercase;color:var(--ink);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .swatch.sel{border-color:var(--acc);box-shadow:4px 4px 0 var(--acc)}
+    .swatch.sel .swatch-chip::after{
+      content:'✓';position:absolute;top:4px;right:4px;width:20px;height:20px;
+      background:var(--acc);color:var(--paper);display:flex;align-items:center;justify-content:center;
+      font-size:.72rem;font-weight:700;border:1.5px solid var(--ink);
     }
 
-    /* ── RESPONSIVE ────────────────────────────────── */
-    @media(max-width:1100px){
-      .cust-layout{grid-template-columns:1fr;gap:1.5rem}
-      .cust-sticky{
-        position:sticky;top:calc(var(--navH) - 1px);z-index:50;
-        max-width:none;margin:0 0 1.5rem;
-        padding:.85rem 1rem 1rem;
-        background:rgba(31,14,69,.94);
-        backdrop-filter:blur(16px) saturate(140%);
-        border:1px solid var(--bdr);border-radius:var(--rLg);
-        box-shadow:0 10px 28px rgba(0,0,0,.35);
-      }
-      .cust-sticky .preview-canvas-wrap{
-        max-width:280px;margin:0 auto .65rem;
-      }
-      .cust-sticky .preview-meta{
-        flex-direction:row;flex-wrap:wrap;align-items:center;
-        gap:.35rem 1.1rem;padding:.55rem .85rem;
-      }
-      .cust-sticky .preview-meta .meta-row{
-        flex:0 1 auto;gap:.4rem;
-      }
-      .cust-sticky .preview-meta .meta-row:last-child{
-        border-top:0!important;padding-top:0!important;margin-top:0!important;
-        margin-left:auto;
-      }
-      .cust-sticky .meta-price{font-size:1.1rem}
+    /* shape grid */
+    .shape-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.9rem}
+    .shape-card{
+      position:relative;background:var(--paper);border:2px solid var(--ink);
+      padding:1.1rem 1rem 1rem;cursor:pointer;text-align:center;
+      transition:all .15s var(--ease);font-family:inherit;color:inherit;
+    }
+    .shape-card:hover{transform:translate(-2px,-2px);box-shadow:4px 4px 0 rgba(27,23,18,.25)}
+    .shape-card.sel{border-color:var(--acc);box-shadow:4px 4px 0 var(--acc)}
+    .shape-card.sel::after{
+      content:'✓';position:absolute;top:6px;right:6px;width:20px;height:20px;
+      background:var(--acc);color:var(--paper);display:flex;align-items:center;justify-content:center;
+      font-size:.72rem;font-weight:700;border:1.5px solid var(--ink);
+    }
+    .shape-mini{height:52px;display:flex;align-items:center;justify-content:center;margin-bottom:.7rem}
+    .shape-name{font-family:var(--ff-d);font-size:1rem;font-weight:800;text-transform:uppercase;margin-bottom:.25rem}
+    .shape-desc{font-family:var(--ff-m);font-size:.62rem;color:var(--ink2);line-height:1.5}
+
+    /* tracklist */
+    .track-sheet{border:2px solid var(--ink)}
+    .track-sheet-head{
+      display:flex;justify-content:space-between;align-items:center;
+      padding:.55rem .9rem;background:var(--ink);color:var(--paper);
+      font-family:var(--ff-m);font-size:.66rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
+    }
+    .track-sheet-head em{font-style:normal;color:var(--acc)}
+    .track-list{min-height:170px;padding:.4rem .9rem}
+    .track-item{display:flex;align-items:center;gap:.55rem;padding:.34rem 0;border-bottom:1px dashed var(--line);animation:fadeUp .25s var(--ease) both}
+    .track-n{font-family:var(--ff-m);font-size:.68rem;color:var(--acc);font-weight:600;width:1.6rem;flex-shrink:0}
+    .track-inp{
+      flex:1;background:transparent;border:none;color:var(--ink);
+      font-family:var(--ff-m);font-size:.85rem;padding:.15rem 0;outline:none;
+    }
+    .track-inp::placeholder{color:var(--ink2);font-style:italic;opacity:.7}
+    .track-inp:focus{box-shadow:0 2px 0 var(--acc)}
+    .track-del{
+      width:20px;height:20px;background:transparent;border:none;color:var(--ink2);
+      cursor:pointer;font-size:.78rem;flex-shrink:0;opacity:.45;transition:all .15s;
+      display:flex;align-items:center;justify-content:center;
+    }
+    .track-item:hover .track-del,.track-del:focus-visible{opacity:1}
+    .track-del:hover{color:var(--acc)}
+    .add-track{
+      display:flex;align-items:center;justify-content:center;gap:.45rem;
+      margin:.7rem .9rem .9rem;width:calc(100% - 1.8rem);padding:.55rem;
+      background:transparent;border:2px dashed var(--ink2);color:var(--ink2);
+      font-family:var(--ff-m);font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+      cursor:pointer;transition:all .15s;
+    }
+    .add-track:hover{border-color:var(--acc);color:var(--acc)}
+
+    /* step footer */
+    .panel-actions{display:flex;justify-content:space-between;align-items:center;gap:.8rem;padding:1.1rem 1.6rem;border-top:2px solid var(--ink);background:var(--paper2)}
+    .btn-next{background:var(--ink);color:var(--paper);padding:.7rem 1.6rem;font-size:.85rem;box-shadow:3px 3px 0 rgba(27,23,18,.3)}
+    .btn-next:hover{background:var(--acc);transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+    .btn-back{background:transparent;color:var(--ink2);padding:.7rem 1.1rem;font-size:.85rem;border-color:var(--ink2);box-shadow:none}
+    .btn-back:hover{color:var(--ink);border-color:var(--ink)}
+
+    /* ── HOW IT WORKS ───────────────────────────── */
+    #how{border-top:2px solid var(--ink);background:var(--paper2);padding:3.5rem 2rem}
+    .how-inner{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:2px solid var(--ink);background:var(--paper)}
+    .how-cell{padding:1.6rem 1.5rem;border-right:2px solid var(--ink)}
+    .how-cell:last-child{border-right:none}
+    .how-num{font-family:var(--ff-m);font-size:.66rem;font-weight:600;letter-spacing:.16em;color:var(--acc);margin-bottom:.6rem}
+    .how-t{font-family:var(--ff-d);font-size:1.05rem;font-weight:800;text-transform:uppercase;margin-bottom:.35rem}
+    .how-x{font-family:var(--ff-m);font-size:.72rem;color:var(--ink2);line-height:1.6}
+
+    /* ── TOASTS ─────────────────────────────────── */
+    #toasts{position:fixed;bottom:1.6rem;left:50%;transform:translateX(-50%);z-index:500;display:flex;flex-direction:column;gap:.5rem;align-items:center}
+    .toast{
+      display:flex;align-items:center;gap:.6rem;padding:.65rem 1.3rem;
+      background:var(--ink);color:var(--paper);border:2px solid var(--ink);
+      font-family:var(--ff-m);font-size:.78rem;box-shadow:4px 4px 0 rgba(27,23,18,.3);
+      animation:toastIn .35s var(--spring) both;white-space:nowrap;
+    }
+    .toast .tic{color:var(--acc);font-weight:700}
+    .toast a{color:var(--acc);font-weight:600;text-decoration:underline;text-underline-offset:3px}
+    .toast.removing{animation:toastOut .3s var(--ease) both}
+
+    /* ── FOOTER ─────────────────────────────────── */
+    footer{
+      border-top:2px solid var(--ink);padding:2rem;
+      display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1.2rem;
+      background:var(--paper);
+    }
+    .footer-logo{font-family:var(--ff-d);font-size:.95rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+    .footer-logo em{color:var(--acc);font-style:normal}
+    .barcode-wrap{display:flex;flex-direction:column;align-items:center;gap:.3rem}
+    .barcode{
+      height:26px;width:120px;
+      background:repeating-linear-gradient(to right,
+        var(--ink) 0 1px, transparent 1px 3px, var(--ink) 3px 5px, transparent 5px 7px,
+        var(--ink) 7px 8px, transparent 8px 11px, var(--ink) 11px 13px, transparent 13px 16px,
+        var(--ink) 16px 17px, transparent 17px 19px);
+    }
+    .barcode-serial{font-family:var(--ff-m);font-size:.55rem;letter-spacing:.2em;color:var(--ink2);text-transform:uppercase}
+    .footer-txt{font-family:var(--ff-m);font-size:.66rem;color:var(--ink2);letter-spacing:.04em}
+
+    /* ── REDUCED MOTION ─────────────────────────── */
+    @media (prefers-reduced-motion:reduce){
+      html{scroll-behavior:auto}
+      .ticker-track{animation:none}
+      *,*::before,*::after{transition-duration:.01ms !important;animation-duration:.01ms !important;animation-iteration-count:1 !important}
+    }
+
+    /* ── RESPONSIVE ─────────────────────────────── */
+    @media(max-width:1080px){
+      .build-layout{grid-template-columns:1fr}
+      .build-aside{position:static;max-width:460px;margin:0 auto}
     }
     @media(max-width:900px){
-      .hero-inner{grid-template-columns:1fr;text-align:center;gap:2.5rem;padding:3rem 1.5rem}
-      .hero-cas-wrap{order:-1;width:min(380px,85vw)}
-      .hero-cta{justify-content:center}
-      .hero-stats{justify-content:center}
-      #customizer{padding:5rem 1.5rem}
+      .hero-inner{grid-template-columns:1fr;gap:2.5rem;padding:3rem 1.5rem}
+      .hero-plate{order:-1;max-width:420px;margin:0 auto;width:100%}
+      .build-sub{text-align:left}
+      .how-inner{grid-template-columns:1fr}
+      .how-cell{border-right:none;border-bottom:2px solid var(--ink)}
+      .how-cell:last-child{border-bottom:none}
     }
-    @media(max-width:600px){
-      .nav-links{display:none}
-      .nav-ham{display:flex}
-      .nav-actions .cart-btn{display:none}
-      nav{padding:0 1.25rem}
-      .hazard-divider{height:12px}
-      .hazard-divider::before,.hazard-divider::after{width:10px;height:10px}
-      .hero-inner{padding:2rem 1rem;gap:2rem}
-      .hero-cas-wrap{width:min(280px,82vw)}
-      .hero-title{font-size:clamp(2.4rem,10vw,3.4rem)}
-      .hero-desc{font-size:.95rem}
-      .hero-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:1.1rem 1.2rem;margin-top:2rem;padding-top:1.5rem}
-      .hero-stats > div{text-align:center;min-width:0}
-      .stat-n{font-size:1.15rem}
-      .stat-l{font-size:.62rem}
-      .shape-grid{grid-template-columns:1fr}
-      .steps-bar .step-lbl{display:none}
-      .step-conn{width:24px}
-      #customizer{padding:4rem 1rem}
-      .cust-title{font-size:1.8rem}
-      .cust-layout{gap:2rem}
-      .color-grid{grid-template-columns:repeat(4,1fr);gap:.55rem}
-      .swatch-name{font-size:.58rem}
-      .step-actions{flex-direction:column-reverse;gap:.7rem}
-      .step-actions > *{width:100%;justify-content:center}
-      .btn-addcart{width:100%;justify-content:center}
-      .preview-meta{font-size:.82rem}
-      .cust-sticky .preview-canvas-wrap{max-width:220px}
-      .cust-sticky .preview-meta{font-size:.7rem;gap:.25rem .8rem;padding:.45rem .65rem}
-      .cust-sticky .meta-price{font-size:.95rem}
-      .cust-sticky .meta-lbl{font-size:.6rem;letter-spacing:.06em}
-      .panel-title{font-size:1.4rem}
-      footer{flex-direction:column;align-items:flex-start;padding:1.5rem 1rem;text-align:left}
-    }
-    @media(max-width:400px){
+    @media(max-width:640px){
+      header{padding:0 1rem}
+      .hdr-link.hide-sm{display:none}
+      #builder{padding:3.5rem 1rem 4rem}
+      .hero-inner{padding:2.5rem 1rem}
+      .hero-stats{flex-wrap:wrap}
+      .hero-stats > div{flex:1 1 40%;border-bottom:2px solid var(--ink)}
+      .hero-stats > div:nth-child(2n){border-right:none}
+      .hero-stats > div:nth-child(3),.hero-stats > div:nth-child(4){border-bottom:none}
+      .step-tab{flex-direction:column;gap:.35rem;padding:.7rem .4rem;font-size:.68rem}
       .color-grid{grid-template-columns:repeat(3,1fr)}
-      .hero-pill{font-size:.66rem;padding:.3rem .75rem}
-      .btn-primary,.btn-ghost{padding:.72rem 1.2rem;font-size:.82rem}
-      .hero-cta{gap:.5rem}
+      .shape-grid{grid-template-columns:1fr}
+      .panel-head,.panel-body{padding-left:1rem;padding-right:1rem}
+      .panel-actions{padding:1rem;flex-direction:column-reverse}
+      .panel-actions > *{width:100%}
+      footer{flex-direction:column;align-items:flex-start;padding:1.5rem 1rem}
     }
   </style>
 </head>
 <body>
 
-<div class="crt-lines" aria-hidden="true"></div>
-
-<nav>
-  <a href="index.html" class="nav-logo">TAPED<em> UP</em></a>
-  <div class="nav-links">
-    <a href="#customizer" class="nav-link" data-tx="nav.customize">Customize</a>
-    <a href="cart.html" class="nav-link" data-tx="nav.cart">Cart</a>
-  </div>
-  <div class="nav-actions">
-    <button class="lang-toggle" id="langTog" onclick="cycleLang()" title="Language">EN</button>
+<header>
+  <a href="index.html" class="logo"><span class="logo-mark" aria-hidden="true"></span>Taped<span style="color:var(--acc)">Up</span></a>
+  <div class="hdr-right">
+    <a href="#builder" class="hdr-link hide-sm" data-tx="nav.builder">Builder</a>
+    <button class="lang-tog" id="langTog" onclick="cycleLang()" title="Language / Taal">EN</button>
     <a href="cart.html" class="cart-btn">
       <span data-tx="nav.cart">Cart</span> <span class="cart-count" id="cartCount">0</span>
     </a>
-    <button class="nav-ham" id="navHam" onclick="toggleMenu()" aria-label="Menu">
-      <span></span><span></span><span></span>
-    </button>
   </div>
-</nav>
+</header>
 
-<div class="nav-mobile" id="navMobile">
-  <a href="#customizer" class="nav-mobile-link" data-tx="nav.customize" onclick="closeMenu()">Customize</a>
-  <a href="cart.html" class="nav-mobile-link" data-tx="nav.cart" onclick="closeMenu()">Cart</a>
-  <div class="nav-mobile-row">
-    <span data-tx="settings.language">Language</span>
-    <button class="lang-toggle" id="langTogM" onclick="cycleLang()">EN</button>
-  </div>
-</div>
-
-<!-- ═══════════════ HERO ══════════════════ -->
+<!-- ═══════════ HERO ═══════════ -->
 <section id="hero">
-  <div class="side-a-sticker" aria-hidden="true">SIDE A</div>
-  <div class="hero-bg">
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="tape-stripe"></div>
-    <div class="tape-stripe"></div>
-    <div class="tape-stripe"></div>
-  </div>
   <div class="hero-inner">
-    <div class="hero-cas-wrap">
-      <canvas id="heroCasCanvas"></canvas>
-    </div>
     <div class="hero-text">
-      <div class="hero-pill" data-tx="hero.pill">Now Shipping Worldwide</div>
+      <div class="hero-kicker" data-tx="hero.kicker">Custom cassettes · hand-dubbed since 1996</div>
       <h1 class="hero-title">
-        <span data-tx="hero.title1">MAKE</span><br>
-        <span class="slash" data-tx="hero.title2">NOISE.</span>
-        <span class="sub" data-tx="hero.sub">Your sound. Your design. Your tape.</span>
+        <span data-tx="hero.title1">Make</span><br>
+        <span class="hit" data-tx="hero.title2">Noise.</span>
       </h1>
-      <p class="hero-desc" data-tx="hero.desc">Custom cassette tapes built to your spec — choose your colour, your form, add your tracklist, and hold something real in your hands.</p>
+      <p class="hero-sub" data-tx="hero.sub">Your sound. Your design. Your tape.</p>
+      <p class="hero-desc" data-tx="hero.desc">Pick a shell colour, choose a body shape, type your tracklist — we dub it by hand and ship something real to your door.</p>
       <div class="hero-cta">
-        <a href="#customizer" class="btn-primary" data-tx="hero.start">▶ Start Customizing</a>
-        <a href="cart.html" class="btn-ghost" data-tx="hero.viewcart">View Cart</a>
+        <a href="#builder" class="btn btn-solid" data-tx="hero.start">▶ Build your tape</a>
+        <a href="cart.html" class="btn btn-line" data-tx="hero.viewcart">View cart</a>
       </div>
       <div class="hero-stats">
         <div><div class="stat-n">8</div><div class="stat-l" data-tx="stats.colours">Colours</div></div>
-        <div><div class="stat-n">3</div><div class="stat-l" data-tx="stats.shapes">Shapes</div></div>
-        <div><div class="stat-n">10</div><div class="stat-l" data-tx="stats.tracks">Tracks Max</div></div>
-        <div><div class="stat-n">$28.99</div><div class="stat-l" data-tx="stats.pertape">Per Tape</div></div>
+        <div><div class="stat-n">3</div><div class="stat-l" data-tx="stats.shapes">Shells</div></div>
+        <div><div class="stat-n">10</div><div class="stat-l" data-tx="stats.tracks">Tracks max</div></div>
+        <div><div class="stat-n">$28.99</div><div class="stat-l" data-tx="stats.pertape">Per tape</div></div>
+      </div>
+    </div>
+    <div class="hero-plate">
+      <div class="hero-sticker" data-tx="hero.sticker">Side A</div>
+      <div class="hero-plate-frame">
+        <span class="reg tl"></span><span class="reg tr"></span><span class="reg bl"></span><span class="reg br"></span>
+        <canvas id="heroCasCanvas"></canvas>
+      </div>
+      <div class="plate-caption">
+        <span data-tx="hero.fig">Fig. 01 — rendered live</span>
+        <span><em>●</em> <span data-tx="hero.hint">moves with your cursor</span></span>
       </div>
     </div>
   </div>
 </section>
 
-<div class="hazard-divider" aria-hidden="true"></div>
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track" id="tickerTrack">
+    <span>100% Analog</span><span class="tk-acc">✶</span><span>Hand Dubbed</span><span class="tk-acc">✶</span><span>Ships Worldwide</span><span class="tk-acc">✶</span><span>Taped Up</span><span class="tk-acc">✶</span><span>Since 1996</span><span class="tk-acc">✶</span>
+    <span>100% Analog</span><span class="tk-acc">✶</span><span>Hand Dubbed</span><span class="tk-acc">✶</span><span>Ships Worldwide</span><span class="tk-acc">✶</span><span>Taped Up</span><span class="tk-acc">✶</span><span>Since 1996</span><span class="tk-acc">✶</span>
+  </div>
+</div>
 
-<!-- ═══════════════ CUSTOMIZER ══════════════════ -->
-<section id="customizer">
-  <div class="cust-head">
-    <h2 class="cust-title" data-tx="cust.title">Build Your Tape</h2>
-    <p class="cust-sub" data-tx="cust.sub">Three steps. One unforgettable cassette.</p>
+<!-- ═══════════ BUILDER ═══════════ -->
+<section id="builder">
+  <div class="build-head">
+    <h2 class="build-title"><span data-tx="build.title1">Build your</span> <span class="hit" data-tx="build.title2">tape</span></h2>
+    <p class="build-sub" data-tx="build.sub">Three steps. Live preview. The label updates as you type.</p>
   </div>
 
-  <div class="steps-bar">
-    <div class="step-item active" id="si-1"><div class="step-dot">1</div><span class="step-lbl" data-tx="step.colour">Colour</span></div>
-    <div class="step-conn" id="sc-1-2"></div>
-    <div class="step-item" id="si-2"><div class="step-dot">2</div><span class="step-lbl" data-tx="step.shape">Shape</span></div>
-    <div class="step-conn" id="sc-2-3"></div>
-    <div class="step-item" id="si-3"><div class="step-dot">3</div><span class="step-lbl" data-tx="step.tracks">Tracks</span></div>
-  </div>
-
-  <div class="cust-layout">
-    <!-- Sticky 3-D preview -->
-    <div class="cust-sticky">
-      <div class="preview-canvas-wrap">
-        <canvas id="prevCasCanvas"></canvas>
-      </div>
-      <div class="preview-meta">
-        <div class="meta-row"><span class="meta-lbl" data-tx="meta.colour">Colour</span><span class="meta-val" id="metaColor">Pitch Black</span></div>
-        <div class="meta-row"><span class="meta-lbl" data-tx="meta.shape">Shape</span><span class="meta-val" id="metaShape">Classic</span></div>
-        <div class="meta-row"><span class="meta-lbl" data-tx="meta.tracks">Tracks</span><span class="meta-val" id="metaTracks">0 / 10</span></div>
-        <div class="meta-row" style="padding-top:.6rem;border-top:1px solid var(--bdr);margin-top:.4rem">
-          <span class="meta-lbl" data-tx="meta.price">Price</span>
-          <span class="meta-price">$28.99</span>
+  <div class="build-layout">
+    <!-- Sticky preview + spec sheet -->
+    <aside class="build-aside">
+      <div class="preview-card">
+        <div class="preview-head"><span data-tx="preview.title">Preview — Side A</span><em>REC ●</em></div>
+        <div class="preview-stage">
+          <canvas id="prevCasCanvas"></canvas>
+          <span class="stage-hint" data-tx="preview.hint">drag-free · follows cursor</span>
         </div>
+        <div class="spec-body">
+          <div class="spec-row"><span class="spec-lbl" data-tx="meta.colour">Colour</span><span class="spec-val" id="metaColor">Pitch Black</span></div>
+          <div class="spec-row"><span class="spec-lbl" data-tx="meta.shape">Shell</span><span class="spec-val" id="metaShape">Classic</span></div>
+          <div class="spec-row" style="border-bottom:none"><span class="spec-lbl" data-tx="meta.tracks">Tracks</span><span class="spec-val" id="metaTracks">0 / 10</span></div>
+        </div>
+        <div class="spec-price-row">
+          <span class="spec-price">$28.99<small data-tx="meta.pertape">per tape · free shipping</small></span>
+        </div>
+        <button class="btn-add" id="btnAddCart" onclick="addToCart()"><span data-tx="btn.addcart">Add to cart</span></button>
       </div>
-    </div>
+    </aside>
 
     <!-- Steps -->
     <div>
-      <!-- Step 1: Colour -->
-      <div class="step-panel active" id="panel-1">
-        <h3 class="panel-title" data-tx="panel1.title">Choose a Colour</h3>
-        <p class="panel-desc" data-tx="panel1.desc">The body colour defines the personality of your tape.</p>
-        <div class="color-grid" id="colorGrid"></div>
-        <div class="step-actions"><span></span><button class="btn-next" data-tx="btn.next.shape" onclick="goTo(2)">Next: Shape →</button></div>
+      <div class="step-tabs" role="tablist">
+        <button class="step-tab active" id="tab-1" onclick="goTo(1)" role="tab"><span class="step-num">1</span><span data-tx="step.colour">Colour</span></button>
+        <button class="step-tab" id="tab-2" onclick="goTo(2)" role="tab"><span class="step-num">2</span><span data-tx="step.shape">Shell</span></button>
+        <button class="step-tab" id="tab-3" onclick="goTo(3)" role="tab"><span class="step-num">3</span><span data-tx="step.tracks">Tracks</span></button>
       </div>
 
-      <!-- Step 2: Shape -->
-      <div class="step-panel" id="panel-2">
-        <h3 class="panel-title" data-tx="panel2.title">Choose a Shape</h3>
-        <p class="panel-desc" data-tx="panel2.desc">Different shell profiles change how the tape looks and feels.</p>
-        <div class="shape-grid" id="shapeGrid"></div>
-        <div class="step-actions">
-          <button class="btn-back" data-tx="btn.back" onclick="goTo(1)">← Back</button>
-          <button class="btn-next" data-tx="btn.next.tracks" onclick="goTo(3)">Next: Tracks →</button>
+      <!-- Step 1 -->
+      <div class="panel active" id="panel-1">
+        <div class="panel-head">
+          <h3 class="panel-title" data-tx="panel1.title">Choose a colour</h3>
+          <p class="panel-desc" data-tx="panel1.desc">The shell colour sets the personality of your tape.</p>
+        </div>
+        <div class="panel-body"><div class="color-grid" id="colorGrid"></div></div>
+        <div class="panel-actions">
+          <span></span>
+          <button class="btn btn-next" onclick="goTo(2)" data-tx="btn.next.shape">Next: Shell →</button>
         </div>
       </div>
 
-      <!-- Step 3: Tracks -->
-      <div class="step-panel" id="panel-3">
-        <h3 class="panel-title" data-tx="panel3.title">Add Your Tracks</h3>
-        <p class="panel-desc" data-tx="panel3.desc">Up to 10 songs. They appear on the label in real time.</p>
-        <div class="track-box">
-          <div class="track-box-head">
-            <span class="track-box-lbl" data-tx="trk.list">TRACKLIST</span>
-            <span class="track-cnt" id="trkCnt">0 / 10</span>
+      <!-- Step 2 -->
+      <div class="panel" id="panel-2">
+        <div class="panel-head">
+          <h3 class="panel-title" data-tx="panel2.title">Choose a shell</h3>
+          <p class="panel-desc" data-tx="panel2.desc">Different profiles change how the tape looks and feels.</p>
+        </div>
+        <div class="panel-body"><div class="shape-grid" id="shapeGrid"></div></div>
+        <div class="panel-actions">
+          <button class="btn btn-back" onclick="goTo(1)" data-tx="btn.back">← Back</button>
+          <button class="btn btn-next" onclick="goTo(3)" data-tx="btn.next.tracks">Next: Tracks →</button>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="panel" id="panel-3">
+        <div class="panel-head">
+          <h3 class="panel-title" data-tx="panel3.title">Type your tracklist</h3>
+          <p class="panel-desc" data-tx="panel3.desc">Up to 10 songs — they print onto the label in real time. Press Enter for the next line.</p>
+        </div>
+        <div class="panel-body">
+          <div class="track-sheet">
+            <div class="track-sheet-head"><span data-tx="trk.list">Tracklist — Side A</span><em id="trkCnt">0 / 10</em></div>
+            <div class="track-list" id="trackList"></div>
+            <button class="add-track" onclick="addTrack()" data-tx="btn.addtrack">+ Add track</button>
           </div>
-          <div class="track-list" id="trackList"></div>
-          <button class="add-track" data-tx="btn.addtrack" onclick="addTrack()">+ Add Track</button>
         </div>
-        <div class="step-actions">
-          <button class="btn-back" data-tx="btn.back" onclick="goTo(2)">← Back</button>
-          <button class="btn-addcart" id="btnAddCart" onclick="addToCart()">Add to Cart — $28.99</button>
+        <div class="panel-actions">
+          <button class="btn btn-back" onclick="goTo(2)" data-tx="btn.back">← Back</button>
+          <button class="btn btn-next" onclick="addToCart()" data-tx="btn.finish">Add to cart ✓</button>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<div class="hazard-divider" aria-hidden="true"></div>
+<!-- ═══════════ HOW ═══════════ -->
+<section id="how">
+  <div class="how-inner">
+    <div class="how-cell">
+      <div class="how-num">STEP 01</div>
+      <div class="how-t" data-tx="how1.t">You design</div>
+      <div class="how-x" data-tx="how1.x">Colour, shell and tracklist — built in the live 3D preview above.</div>
+    </div>
+    <div class="how-cell">
+      <div class="how-num">STEP 02</div>
+      <div class="how-t" data-tx="how2.t">We dub</div>
+      <div class="how-x" data-tx="how2.x">Every tape is recorded and labelled by hand in our studio.</div>
+    </div>
+    <div class="how-cell">
+      <div class="how-num">STEP 03</div>
+      <div class="how-t" data-tx="how3.t">It ships</div>
+      <div class="how-x" data-tx="how3.x">Free worldwide shipping. Something real lands in your mailbox.</div>
+    </div>
+  </div>
+</section>
 
 <footer>
-  <span class="footer-logo">TAPED<em> UP</em></span>
-  <div class="footer-barcode" aria-hidden="true">
+  <span class="footer-logo">Taped<em> Up</em></span>
+  <div class="barcode-wrap" aria-hidden="true">
     <div class="barcode"></div>
-    <div class="barcode-serial">TU-1996-A · NL/EN</div>
+    <div class="barcode-serial">TU-1996-A · EN/NL</div>
   </div>
   <span class="footer-txt" data-tx="footer.txt">© 2026 Taped Up. Built with analog love.</span>
 </footer>
 
 <div id="toasts"></div>
 
-<!-- Three.js: try local first, fall back to CDN if missing -->
+<!-- Three.js: local first, CDN fallback -->
 <script src="three.min.js" onerror="(function(){var s=document.createElement('script');s.src='https://unpkg.com/three@0.128.0/build/three.min.js';s.onerror=function(){var s2=document.createElement('script');s2.src='https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js';document.head.appendChild(s2);};document.head.appendChild(s);})()"></script>
 <script>
-/* ══════════════════════════════════════════════════════
-   DATA
-══════════════════════════════════════════════════════ */
+/* ════════════ DATA ════════════ */
 const COLORS = [
   {id:'pitch',   name:'Pitch Black',  nameNL:'Gitzwart',     body:'#1C1814', label:'#282018', accent:'#D09050', lTxt:'#907060'},
   {id:'arctic',  name:'Arctic White', nameNL:'Arctisch Wit', body:'#EDE9E0', label:'#E0DCD2', accent:'#C04830', lTxt:'#806050'},
@@ -655,60 +583,68 @@ const COLORS = [
   {id:'chrome',  name:'Chrome',       nameNL:'Chroom',       body:'#686F78', label:'#808890', accent:'#D8E2EC', lTxt:'#FFFFFF'}
 ];
 const SHAPES = [
-  {id:'classic', name:'Classic',  nameNL:'Klassiek',    desc:'Standard proportions. Full label area.', descNL:'Standaardafmetingen. Volledig labelvlak.'},
-  {id:'skeleton',name:'Skeleton', nameNL:'Skelet',      desc:'Transparent shell. Internals exposed.',  descNL:'Doorzichtige behuizing. Binnenkant zichtbaar.'},
-  {id:'sport',   name:'Sport',    nameNL:'Sport',       desc:'Wide window. Minimal label. Max tape.',  descNL:'Breed venster. Minimaal label. Max tape.'}
+  {id:'classic', name:'Classic',  nameNL:'Klassiek', desc:'Standard proportions. Full label area.', descNL:'Standaardafmetingen. Volledig labelvlak.'},
+  {id:'skeleton',name:'Skeleton', nameNL:'Skelet',   desc:'Transparent shell. Internals exposed.',  descNL:'Doorzichtige behuizing. Binnenkant zichtbaar.'},
+  {id:'sport',   name:'Sport',    nameNL:'Sport',    desc:'Wide window. Minimal label. Max tape.',  descNL:'Breed venster. Minimaal label. Max tape.'}
 ];
 const PRICE = 28.99;
 
-/* ══════════════════════════════════════════════════════
-   I18N — EN / NL
-══════════════════════════════════════════════════════ */
+/* ════════════ I18N — EN / NL ════════════ */
 const I18N = {
   en: {
-    'nav.customize':'Customize','nav.cart':'Cart',
-    'settings.language':'Language',
-    'hero.pill':'Now Shipping Worldwide',
-    'hero.title1':'MAKE','hero.title2':'NOISE.',
+    'nav.builder':'Builder','nav.cart':'Cart',
+    'hero.kicker':'Custom cassettes · hand-dubbed since 1996',
+    'hero.title1':'Make','hero.title2':'Noise.',
     'hero.sub':'Your sound. Your design. Your tape.',
-    'hero.desc':'Custom cassette tapes built to your spec — choose your colour, your form, add your tracklist, and hold something real in your hands.',
-    'hero.start':'▶ Start Customizing','hero.viewcart':'View Cart',
-    'stats.colours':'Colours','stats.shapes':'Shapes','stats.tracks':'Tracks Max','stats.pertape':'Per Tape',
-    'cust.title':'Build Your Tape','cust.sub':'Three steps. One unforgettable cassette.',
-    'step.colour':'Colour','step.shape':'Shape','step.tracks':'Tracks',
-    'panel1.title':'Choose a Colour','panel1.desc':'The body colour defines the personality of your tape.',
-    'panel2.title':'Choose a Shape','panel2.desc':'Different shell profiles change how the tape looks and feels.',
-    'panel3.title':'Add Your Tracks','panel3.desc':'Up to 10 songs. They appear on the label in real time.',
-    'trk.list':'TRACKLIST',
-    'btn.next.shape':'Next: Shape →','btn.next.tracks':'Next: Tracks →',
-    'btn.back':'← Back','btn.addtrack':'+ Add Track',
-    'btn.addcart':'Add to Cart — $28.99',
-    'meta.colour':'Colour','meta.shape':'Shape','meta.tracks':'Tracks','meta.price':'Price',
+    'hero.desc':'Pick a shell colour, choose a body shape, type your tracklist — we dub it by hand and ship something real to your door.',
+    'hero.start':'▶ Build your tape','hero.viewcart':'View cart',
+    'hero.sticker':'Side A','hero.fig':'Fig. 01 — rendered live','hero.hint':'moves with your cursor',
+    'stats.colours':'Colours','stats.shapes':'Shells','stats.tracks':'Tracks max','stats.pertape':'Per tape',
+    'build.title1':'Build your','build.title2':'tape',
+    'build.sub':'Three steps. Live preview. The label updates as you type.',
+    'preview.title':'Preview — Side A','preview.hint':'drag-free · follows cursor',
+    'step.colour':'Colour','step.shape':'Shell','step.tracks':'Tracks',
+    'panel1.title':'Choose a colour','panel1.desc':'The shell colour sets the personality of your tape.',
+    'panel2.title':'Choose a shell','panel2.desc':'Different profiles change how the tape looks and feels.',
+    'panel3.title':'Type your tracklist','panel3.desc':'Up to 10 songs — they print onto the label in real time. Press Enter for the next line.',
+    'trk.list':'Tracklist — Side A',
+    'btn.next.shape':'Next: Shell →','btn.next.tracks':'Next: Tracks →',
+    'btn.back':'← Back','btn.addtrack':'+ Add track','btn.finish':'Add to cart ✓',
+    'btn.addcart':'Add to cart',
+    'meta.colour':'Colour','meta.shape':'Shell','meta.tracks':'Tracks','meta.pertape':'per tape · free shipping',
+    'how1.t':'You design','how1.x':'Colour, shell and tracklist — built in the live 3D preview above.',
+    'how2.t':'We dub','how2.x':'Every tape is recorded and labelled by hand in our studio.',
+    'how3.t':'It ships','how3.x':'Free worldwide shipping. Something real lands in your mailbox.',
     'footer.txt':'© 2026 Taped Up. Built with analog love.',
-    'toast.added':'Tape added to cart!','toast.maxtracks':'Max 10 tracks',
+    'toast.added':'Tape added to cart!','toast.maxtracks':'Max 10 tracks','toast.viewcart':'View cart →',
     'placeholder.song':'Song title…'
   },
   nl: {
-    'nav.customize':'Aanpassen','nav.cart':'Winkelwagen',
-    'settings.language':'Taal',
-    'hero.pill':'Nu Wereldwijd Verzonden',
-    'hero.title1':'MAAK','hero.title2':'LAWAAI.',
+    'nav.builder':'Bouwer','nav.cart':'Wagen',
+    'hero.kicker':'Cassettes op maat · met de hand gedubd sinds 1996',
+    'hero.title1':'Maak','hero.title2':'Lawaai.',
     'hero.sub':'Jouw geluid. Jouw ontwerp. Jouw cassette.',
-    'hero.desc':'Op maat gemaakte cassettes naar jouw specificatie — kies je kleur, je vorm, voeg je tracklijst toe en houd iets echts in handen.',
-    'hero.start':'▶ Begin met Aanpassen','hero.viewcart':'Bekijk Winkelwagen',
-    'stats.colours':'Kleuren','stats.shapes':'Vormen','stats.tracks':'Max Tracks','stats.pertape':'Per Cassette',
-    'cust.title':'Bouw Jouw Cassette','cust.sub':'Drie stappen. Eén onvergetelijke cassette.',
+    'hero.desc':'Kies een kleur, kies een vorm, typ je tracklijst — wij dubben hem met de hand en sturen iets echts naar je deur.',
+    'hero.start':'▶ Bouw je cassette','hero.viewcart':'Bekijk winkelwagen',
+    'hero.sticker':'Kant A','hero.fig':'Fig. 01 — live weergave','hero.hint':'beweegt met je cursor',
+    'stats.colours':'Kleuren','stats.shapes':'Vormen','stats.tracks':'Max tracks','stats.pertape':'Per cassette',
+    'build.title1':'Bouw je','build.title2':'cassette',
+    'build.sub':'Drie stappen. Live voorbeeld. Het label verandert terwijl je typt.',
+    'preview.title':'Voorbeeld — Kant A','preview.hint':'volgt je cursor',
     'step.colour':'Kleur','step.shape':'Vorm','step.tracks':'Tracks',
-    'panel1.title':'Kies een Kleur','panel1.desc':'De behuizingskleur bepaalt het karakter van je cassette.',
-    'panel2.title':'Kies een Vorm','panel2.desc':'Verschillende profielen veranderen het uiterlijk en gevoel.',
-    'panel3.title':'Voeg Je Tracks Toe','panel3.desc':'Tot 10 nummers. Ze verschijnen direct op het label.',
-    'trk.list':'TRACKLIJST',
+    'panel1.title':'Kies een kleur','panel1.desc':'De kleur van de behuizing bepaalt het karakter van je cassette.',
+    'panel2.title':'Kies een vorm','panel2.desc':'Verschillende profielen veranderen het uiterlijk en gevoel.',
+    'panel3.title':'Typ je tracklijst','panel3.desc':'Tot 10 nummers — ze verschijnen direct op het label. Druk op Enter voor de volgende regel.',
+    'trk.list':'Tracklijst — Kant A',
     'btn.next.shape':'Volgende: Vorm →','btn.next.tracks':'Volgende: Tracks →',
-    'btn.back':'← Terug','btn.addtrack':'+ Track Toevoegen',
-    'btn.addcart':'In Winkelwagen — $28.99',
-    'meta.colour':'Kleur','meta.shape':'Vorm','meta.tracks':'Tracks','meta.price':'Prijs',
+    'btn.back':'← Terug','btn.addtrack':'+ Track toevoegen','btn.finish':'In winkelwagen ✓',
+    'btn.addcart':'In winkelwagen',
+    'meta.colour':'Kleur','meta.shape':'Vorm','meta.tracks':'Tracks','meta.pertape':'per cassette · gratis verzending',
+    'how1.t':'Jij ontwerpt','how1.x':'Kleur, vorm en tracklijst — gebouwd in het live 3D-voorbeeld hierboven.',
+    'how2.t':'Wij dubben','how2.x':'Elke cassette wordt met de hand opgenomen en gelabeld in onze studio.',
+    'how3.t':'Wij verzenden','how3.x':'Gratis wereldwijde verzending. Iets echts valt in je brievenbus.',
     'footer.txt':'© 2026 Taped Up. Met analoge liefde gemaakt.',
-    'toast.added':'Cassette toegevoegd!','toast.maxtracks':'Max 10 tracks',
+    'toast.added':'Cassette toegevoegd!','toast.maxtracks':'Max 10 tracks','toast.viewcart':'Bekijk winkelwagen →',
     'placeholder.song':'Titel van het nummer…'
   }
 };
@@ -718,18 +654,11 @@ const t = k => (I18N[LANG] && I18N[LANG][k]) || (I18N.en[k] || k);
 function applyLang() {
   document.documentElement.lang = LANG;
   document.querySelectorAll('[data-tx]').forEach(el => { el.innerHTML = t(el.dataset.tx); });
-  document.querySelectorAll('[data-tx-ph]').forEach(el => { el.placeholder = t(el.dataset.txPh); });
-  const code = LANG.toUpperCase();
-  const lt = document.getElementById('langTog'); if (lt) lt.textContent = code;
-  const lm = document.getElementById('langTogM'); if (lm) lm.textContent = code;
-  // re-render dynamic UI
+  const lt = document.getElementById('langTog'); if (lt) lt.textContent = LANG.toUpperCase();
   if (typeof buildColorGrid === 'function') buildColorGrid();
   if (typeof buildShapeGrid === 'function') buildShapeGrid();
   if (typeof renderTrackList === 'function') renderTrackList();
   if (typeof updateMeta === 'function') updateMeta();
-  // re-render addcart button (has price)
-  const ac = document.getElementById('btnAddCart');
-  if (ac) ac.textContent = t('btn.addcart');
 }
 function cycleLang() {
   LANG = LANG === 'en' ? 'nl' : 'en';
@@ -737,48 +666,18 @@ function cycleLang() {
   applyLang();
 }
 
-/* ══════════════════════════════════════════════════════
-   APP STATE
-══════════════════════════════════════════════════════ */
+/* ════════════ APP STATE ════════════ */
 const state = {color:'pitch', shape:'classic', songs:[], step:1, cart:[]};
 
-/* ══════════════════════════════════════════════════════
-   NAV HAMBURGER
-══════════════════════════════════════════════════════ */
-function toggleMenu() {
-  const ham = document.getElementById('navHam');
-  const menu = document.getElementById('navMobile');
-  ham.classList.toggle('open');
-  menu.classList.toggle('open');
-}
-function closeMenu() {
-  document.getElementById('navHam').classList.remove('open');
-  document.getElementById('navMobile').classList.remove('open');
-}
-document.addEventListener('click', e => {
-  const ham = document.getElementById('navHam');
-  const menu = document.getElementById('navMobile');
-  if (!ham.contains(e.target) && !menu.contains(e.target)) {
-    ham.classList.remove('open');
-    menu.classList.remove('open');
-  }
-});
-
-/* ══════════════════════════════════════════════════════
-   GLOBAL MOUSE (drives both canvases)
-══════════════════════════════════════════════════════ */
+/* ════════════ GLOBAL MOUSE (drives both canvases) ════════════ */
 const mouse = {x:0, y:0};
 window.addEventListener('mousemove', e => {
   mouse.x = (e.clientX / window.innerWidth  - 0.5) * 2;
   mouse.y = -(e.clientY / window.innerHeight - 0.5) * 2;
 });
 
-/* ══════════════════════════════════════════════════════
-   THREE.JS CASSETTE BUILDER
-══════════════════════════════════════════════════════ */
-function hexToThreeColor(hex) {
-  return new THREE.Color(hex);
-}
+/* ════════════ THREE.JS CASSETTE BUILDER ════════════ */
+function hexToThreeColor(hex) { return new THREE.Color(hex); }
 
 function buildCassetteGroup(colorId, shapeId, songs) {
   const C = COLORS.find(c => c.id === colorId) || COLORS[0];
@@ -941,8 +840,8 @@ function _drawLabel(ctx, canvas, C, songs) {
   const lineH = h * .185;
   ctx.font = `${tFsz}px "Courier New", monospace`;
   if (valid.length > 0) {
-    valid.forEach((t, i) => {
-      ctx.fillText(`${i+1}. ${t.slice(0,26)}`, 12, h*.53 + i*lineH);
+    valid.forEach((s, i) => {
+      ctx.fillText(`${i+1}. ${s.slice(0,26)}`, 12, h*.53 + i*lineH);
     });
   } else {
     ctx.globalAlpha = .25;
@@ -952,29 +851,24 @@ function _drawLabel(ctx, canvas, C, songs) {
   ctx.globalAlpha = 1;
 }
 
-/* ══════════════════════════════════════════════════════
-   THREE.JS SCENE SETUP
-══════════════════════════════════════════════════════ */
+/* ════════════ SCENES ════════════ */
 let heroRenderer, heroScene, heroCamera, heroCas;
 let prevRenderer, prevScene, prevCamera, prevCas;
 
 function addLights(scene) {
-  scene.add(new THREE.AmbientLight(0xFFEEDD, 0.85));
-  const dl = new THREE.DirectionalLight(0xFFFAF0, 1.1);
+  scene.add(new THREE.AmbientLight(0xFFF6E8, 0.92));
+  const dl = new THREE.DirectionalLight(0xFFFDF6, 1.05);
   dl.position.set(3, 4, 6);
   scene.add(dl);
   const rl = new THREE.DirectionalLight(0xC0D8FF, 0.22);
   rl.position.set(-5, -2, 2);
   scene.add(rl);
-  const bl = new THREE.DirectionalLight(0xFF9040, 0.06);
-  bl.position.set(0, -4, -3);
-  scene.add(bl);
 }
 
 function initHeroScene() {
-  const container = document.querySelector('.hero-cas-wrap');
+  const container = document.querySelector('.hero-plate-frame');
   const canvas    = document.getElementById('heroCasCanvas');
-  const w = container.clientWidth || 480;
+  const w = (container.clientWidth - 38) || 480;
   const h = Math.round(w * 0.62);
 
   heroRenderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
@@ -994,7 +888,7 @@ function initHeroScene() {
 }
 
 function initPreviewScene() {
-  const container = document.querySelector('.preview-canvas-wrap');
+  const container = document.querySelector('.preview-stage');
   const canvas    = document.getElementById('prevCasCanvas');
   const w = container.clientWidth || 420;
   const h = Math.round(w * 0.62);
@@ -1039,35 +933,33 @@ function disposeCas(grp) {
   });
 }
 
-/* ══════════════════════════════════════════════════════
-   ANIMATION LOOP
-══════════════════════════════════════════════════════ */
+/* ════════════ ANIMATION LOOP ════════════ */
 const tgt = {x:0, y:0};
+const REDUCE_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 function mainLoop() {
   requestAnimationFrame(mainLoop);
   tgt.x += (mouse.y * 0.30 - tgt.x) * 0.08;
   tgt.y += (mouse.x * 0.45 - tgt.y) * 0.08;
+  const reelStep = REDUCE_MOTION ? 0 : 0.006;
 
   if (heroCas && heroRenderer) {
     heroCas.rotation.x = tgt.x + 0.08;
     heroCas.rotation.y = tgt.y - 0.18;
-    heroCas.userData.reelL.rotation.z -= 0.006;
-    heroCas.userData.reelR.rotation.z += 0.006;
+    heroCas.userData.reelL.rotation.z -= reelStep;
+    heroCas.userData.reelR.rotation.z += reelStep;
     heroRenderer.render(heroScene, heroCamera);
   }
   if (prevCas && prevRenderer) {
     prevCas.rotation.x = tgt.x;
     prevCas.rotation.y = tgt.y;
-    prevCas.userData.reelL.rotation.z -= 0.006;
-    prevCas.userData.reelR.rotation.z += 0.006;
+    prevCas.userData.reelL.rotation.z -= reelStep;
+    prevCas.userData.reelR.rotation.z += reelStep;
     prevRenderer.render(prevScene, prevCamera);
   }
 }
 
-/* ══════════════════════════════════════════════════════
-   CUSTOMIZER LOGIC
-══════════════════════════════════════════════════════ */
+/* ════════════ CUSTOMIZER LOGIC ════════════ */
 function updateMeta() {
   const C = COLORS.find(c=>c.id===state.color);
   const S = SHAPES.find(s=>s.id===state.shape);
@@ -1092,12 +984,10 @@ function setShape(id) {
 function buildColorGrid() {
   document.getElementById('colorGrid').innerHTML = COLORS.map(c=>{
     const nm = LANG==='nl' ? (c.nameNL||c.name) : c.name;
-    return `<div>
-      <div class="color-swatch${c.id===state.color?' sel':''}"
-           style="background:${c.body};outline:1px solid rgba(255,255,255,.12)"
-           onclick="setColor('${c.id}')"></div>
+    return `<button type="button" class="swatch${c.id===state.color?' sel':''}" aria-pressed="${c.id===state.color}" onclick="setColor('${c.id}')">
+      <span class="swatch-chip" style="background:${c.body};display:block"></span>
       <span class="swatch-name">${nm}</span>
-    </div>`;
+    </button>`;
   }).join('');
 }
 
@@ -1105,28 +995,25 @@ function buildShapeGrid() {
   document.getElementById('shapeGrid').innerHTML = SHAPES.map(s=>{
     const nm = LANG==='nl' ? (s.nameNL||s.name) : s.name;
     const ds = LANG==='nl' ? (s.descNL||s.desc) : s.desc;
-    return `<div class="shape-card${s.id===state.shape?' sel':''}" onclick="setShape('${s.id}')">
+    return `<button type="button" class="shape-card${s.id===state.shape?' sel':''}" aria-pressed="${s.id===state.shape}" onclick="setShape('${s.id}')">
       <div class="shape-mini">${miniShapeIcon(s.id)}</div>
       <div class="shape-name">${nm}</div>
       <div class="shape-desc">${ds}</div>
-    </div>`;
+    </button>`;
   }).join('');
 }
 
 function miniShapeIcon(sid) {
   const isSkel=sid==='skeleton', isSport=sid==='sport';
   const wH = isSport ? 18 : 12, lH = isSport ? 7 : 10;
-  const fill=isSkel?'none':'rgba(255,255,255,.08)', stroke=isSkel?'rgba(196,255,61,.5)':'none';
-  return `<svg viewBox="0 0 80 50" width="80" height="50">
-    <rect x="2" y="2" width="76" height="46" rx="4" fill="${fill}" stroke="${stroke}" stroke-width="1.2"/>
-    <rect x="8" y="5" width="64" height="${lH}" rx="2" fill="rgba(255,255,255,.10)"/>
-    <rect x="8" y="${6+lH}" width="64" height="${wH}" rx="3" fill="${isSkel?'rgba(255,255,255,.06)':'rgba(0,0,0,.5)'}"/>
-    <circle cx="24" cy="${6+lH+Math.round(wH/2)}" r="${isSport?6:5}" fill="rgba(255,31,124,.55)"/>
-    <circle cx="56" cy="${6+lH+Math.round(wH/2)}" r="${isSport?6:5}" fill="rgba(0,232,255,.55)"/>
-    <circle cx="4" cy="4" r="2" fill="rgba(255,255,255,.25)"/>
-    <circle cx="76" cy="4" r="2" fill="rgba(255,255,255,.25)"/>
-    <circle cx="4" cy="46" r="2" fill="rgba(255,255,255,.25)"/>
-    <circle cx="76" cy="46" r="2" fill="rgba(255,255,255,.25)"/>
+  const fill=isSkel?'none':'rgba(27,23,18,.08)';
+  const dash=isSkel?'stroke-dasharray="3 2"':'';
+  return `<svg viewBox="0 0 80 50" width="80" height="50" aria-hidden="true">
+    <rect x="2" y="2" width="76" height="46" rx="4" fill="${fill}" stroke="#1B1712" stroke-width="2" ${dash}/>
+    <rect x="8" y="6" width="64" height="${lH}" rx="1.5" fill="rgba(255,77,0,.7)" stroke="#1B1712" stroke-width="1"/>
+    <rect x="8" y="${8+lH}" width="64" height="${wH}" rx="2" fill="${isSkel?'rgba(27,23,18,.06)':'rgba(27,23,18,.75)'}" stroke="#1B1712" stroke-width="1"/>
+    <circle cx="24" cy="${8+lH+Math.round(wH/2)}" r="${isSport?6:5}" fill="none" stroke="${isSkel?'#1B1712':'#F4EEE1'}" stroke-width="1.6"/>
+    <circle cx="56" cy="${8+lH+Math.round(wH/2)}" r="${isSport?6:5}" fill="none" stroke="${isSkel?'#1B1712':'#F4EEE1'}" stroke-width="1.6"/>
   </svg>`;
 }
 
@@ -1140,13 +1027,21 @@ function renderTrackList() {
       <span class="track-n">${String(i+1).padStart(2,'0')}</span>
       <input class="track-inp" type="text" placeholder="${ph}"
              value="${s.replace(/"/g,'&quot;')}"
-             data-idx="${i}" oninput="onTrackInput(this)">
-      <button class="track-del" onclick="removeTrack(${i})" title="Remove">✕</button>
+             data-idx="${i}" oninput="onTrackInput(this)" onkeydown="onTrackKey(event, ${i})">
+      <button class="track-del" onclick="removeTrack(${i})" title="Remove" aria-label="Remove track ${i+1}">✕</button>
     </div>`).join('');
 }
 
+function onTrackKey(e, i) {
+  if (e.key !== 'Enter') return;
+  e.preventDefault();
+  const inputs = document.querySelectorAll('.track-inp');
+  if (i < inputs.length - 1) { inputs[i+1].focus(); return; }
+  if (state.songs.length < 10 && e.target.value.trim()) addTrack();
+}
+
 function addTrack() {
-  if (state.songs.length >= 10) { showToast(t('toast.maxtracks'), 'warn'); return; }
+  if (state.songs.length >= 10) { showToast(t('toast.maxtracks')); return; }
   state.songs.push('');
   renderTrackList();
   updateLabel();
@@ -1167,31 +1062,31 @@ function onTrackInput(el) {
 
 function goTo(n) {
   document.getElementById(`panel-${state.step}`).classList.remove('active');
-  const prevSI = document.getElementById(`si-${state.step}`);
-  prevSI.classList.remove('active');
-  if (n > state.step) prevSI.classList.add('done');
-  else prevSI.classList.remove('done');
+  const prevTab = document.getElementById(`tab-${state.step}`);
+  prevTab.classList.remove('active');
+  if (n > state.step) prevTab.classList.add('done');
 
   if (n < state.step) {
-    for (let i=n+1;i<=3;i++) {
-      document.getElementById(`si-${i}`).classList.remove('done','active');
-    }
+    for (let i=n;i<=3;i++) document.getElementById(`tab-${i}`).classList.remove('done');
   }
 
   state.step = n;
+  // Seed an empty row when arriving at the tracks step so typing can start immediately
+  if (n === 3 && state.songs.length === 0) {
+    state.songs.push('');
+    renderTrackList();
+  }
   document.getElementById(`panel-${n}`).classList.add('active');
-  document.getElementById(`si-${n}`).classList.remove('done');
-  document.getElementById(`si-${n}`).classList.add('active');
+  const tab = document.getElementById(`tab-${n}`);
+  tab.classList.remove('done');
+  tab.classList.add('active');
 
-  document.getElementById('sc-1-2').classList.toggle('done', n>=2);
-  document.getElementById('sc-2-3').classList.toggle('done', n>=3);
-
-  document.getElementById('customizer').scrollIntoView({behavior:'smooth',block:'start'});
+  // Only scroll if builder top is off-screen
+  const r = document.getElementById('builder').getBoundingClientRect();
+  if (r.top < -40) document.getElementById('builder').scrollIntoView({behavior:'smooth', block:'start'});
 }
 
-/* ══════════════════════════════════════════════════════
-   CART
-══════════════════════════════════════════════════════ */
+/* ════════════ CART ════════════ */
 function loadCartFromStorage() {
   try { state.cart = JSON.parse(localStorage.getItem('tuCart') || '[]'); } catch(e){state.cart=[];}
   updateCartCount();
@@ -1211,63 +1106,54 @@ function addToCart() {
   state.cart.push({id:Date.now(), color:state.color, shape:state.shape, songs:[...tracks], qty:1});
   saveCart();
   updateCartCount();
-  showToast(t('toast.added'), 'success');
-  state.color='pitch'; state.shape='classic'; state.songs=[]; state.step=1;
+  showToast(t('toast.added'), `<a href="cart.html">${t('toast.viewcart')}</a>`);
+  state.color='pitch'; state.shape='classic'; state.songs=[];
   buildColorGrid(); buildShapeGrid(); renderTrackList();
   rebuildPreview();
   goToReset();
 }
 
 function goToReset() {
-  document.querySelectorAll('.step-panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.step-item').forEach(si=>si.classList.remove('active','done'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.step-tab').forEach(s=>s.classList.remove('active','done'));
   document.getElementById('panel-1').classList.add('active');
-  document.getElementById('si-1').classList.add('active');
-  document.getElementById('sc-1-2').classList.remove('done');
-  document.getElementById('sc-2-3').classList.remove('done');
+  document.getElementById('tab-1').classList.add('active');
   state.step=1;
 }
 
-/* ══════════════════════════════════════════════════════
-   TOASTS
-══════════════════════════════════════════════════════ */
-function showToast(msg, type='info') {
-  const icons={success:'✓',warn:'⚠',info:'◉'};
-  const t = document.createElement('div');
-  t.className=`toast ${type}`;
-  t.innerHTML=`<span>${icons[type]||'◉'}</span>${msg}`;
-  document.getElementById('toasts').appendChild(t);
-  setTimeout(()=>{t.classList.add('removing');setTimeout(()=>t.remove(),300);}, 2800);
+/* ════════════ TOASTS ════════════ */
+function showToast(msg, actionHTML='') {
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.setAttribute('role','status');
+  el.innerHTML = `<span class="tic">▸</span>${msg}${actionHTML ? '&nbsp;'+actionHTML : ''}`;
+  document.getElementById('toasts').appendChild(el);
+  setTimeout(()=>{el.classList.add('removing');setTimeout(()=>el.remove(),300);}, actionHTML ? 4500 : 2800);
 }
 
-/* ══════════════════════════════════════════════════════
-   RESIZE HANDLER
-══════════════════════════════════════════════════════ */
+/* ════════════ RESIZE ════════════ */
 window.addEventListener('resize', ()=>{
   if (heroRenderer) {
-    const c = document.querySelector('.hero-cas-wrap');
-    const w=c.clientWidth, h=Math.round(w*.62);
+    const c = document.querySelector('.hero-plate-frame');
+    const w=(c.clientWidth - 38), h=Math.round(w*.62);
     heroRenderer.setSize(w,h);
     heroCamera.aspect=w/h; heroCamera.updateProjectionMatrix();
   }
   if (prevRenderer) {
-    const c = document.querySelector('.preview-canvas-wrap');
+    const c = document.querySelector('.preview-stage');
     const w=c.clientWidth, h=Math.round(w*.62);
     prevRenderer.setSize(w,h);
     prevCamera.aspect=w/h; prevCamera.updateProjectionMatrix();
   }
 });
 
-/* ══════════════════════════════════════════════════════
-   INIT
-══════════════════════════════════════════════════════ */
+/* ════════════ INIT ════════════ */
 function init() {
   applyLang();
   buildColorGrid();
   buildShapeGrid();
   renderTrackList();
   loadCartFromStorage();
-  // Wait for THREE to be defined (handles CDN fallback / async loading)
   let waitedMs = 0;
   (function waitForThree() {
     if (typeof THREE !== 'undefined') {
