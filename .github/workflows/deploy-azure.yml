@@ -48,3 +48,19 @@ jobs:
             --pattern "*.js" \
             --overwrite true \
             --content-cache "public, max-age=31536000, immutable"
+
+      - name: Upload images (week cache)
+        env:
+          AZURE_STORAGE_ACCOUNT: ${{ secrets.AZURE_STORAGE_ACCOUNT }}
+          AZURE_STORAGE_KEY: ${{ secrets.AZURE_STORAGE_KEY }}
+        run: |
+          az storage blob upload-batch \
+            --account-name "$AZURE_STORAGE_ACCOUNT" \
+            --account-key "$AZURE_STORAGE_KEY" \
+            --auth-mode key \
+            --destination '$web' \
+            --source . \
+            --pattern "assets/*.webp" \
+            --overwrite true \
+            --content-type "image/webp" \
+            --content-cache "public, max-age=604800"

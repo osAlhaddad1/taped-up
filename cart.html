@@ -3,374 +3,294 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TAPED UP — Your Cart</title>
+  <title>Taped Up — Cart</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Archivo:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400..900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --paper:#F4EEE1;
-      --paper2:#ECE3D0;
-      --ink:#1B1712;
-      --ink2:#6B6052;
-      --line:#D9CEB9;
-      --acc:#FF4D00;
-      --accD:#E04400;
-      --ok:#1E7A4E;
-      --navH:64px;
-      --ease:cubic-bezier(.4,0,.2,1);
-      --spring:cubic-bezier(.34,1.56,.64,1);
-      --ff-d:'Bricolage Grotesque',sans-serif;
-      --ff-m:'IBM Plex Mono',ui-monospace,monospace;
-      --ff-b:'Archivo',sans-serif;
+      --ground: #EFEFEE;
+      --stage: #E4E4E2;
+      --ink: #0D0D0F;
+      --ink2: #43444A;
+      --muted: #6E6F76;
+      --acc: #2F5BFF;
+      --acc-lift: #7C97FF;
+      --hair: rgba(13, 13, 15, .12);
+      --ease: cubic-bezier(.16, 1, .3, 1);
+      --ff-d: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+      --ff-m: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+      --nav: 64px;
+      --gut: clamp(16px, 3.4vw, 48px);
     }
-    html { scroll-behavior:smooth; }
-    body {
-      background:var(--paper);
-      background-image:repeating-linear-gradient(0deg, transparent 0 31px, rgba(27,23,18,.035) 31px 32px);
-      color:var(--ink); font-family:var(--ff-b); line-height:1.6; min-height:100vh;
-      overflow-x:hidden;
-    }
-    body::after {
-      content:''; position:fixed; inset:0; z-index:9999; pointer-events:none; opacity:.05;
-      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-      background-size:180px; mix-blend-mode:multiply;
-    }
-    ::selection{background:var(--acc);color:var(--paper)}
-    ::-webkit-scrollbar{width:6px} ::-webkit-scrollbar-track{background:var(--paper2)} ::-webkit-scrollbar-thumb{background:var(--ink)}
-    h1,h2,h3,h4{font-family:var(--ff-d);line-height:1;letter-spacing:-.02em}
-    :focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+    html { -webkit-text-size-adjust: 100%; }
+    body { background: var(--ground); color: var(--ink); font-family: var(--ff-d); font-size: 16px; line-height: 1.5; overflow-x: clip; -webkit-font-smoothing: antialiased; }
+    [hidden] { display: none !important; }
+    img, svg { display: block; max-width: 100%; }
+    a { color: inherit; }
+    button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+    :focus-visible { outline: 1px solid var(--acc); outline-offset: 3px; }
+    ::selection { background: var(--ink); color: var(--ground); }
+    .meta { font-family: var(--ff-m); font-size: 11px; font-weight: 500; line-height: 1.6; letter-spacing: .14em; text-transform: uppercase; }
+    .nu { text-transform: none; }
+    .h1 { font-weight: 800; font-size: clamp(40px, 5.4vw, 78px); letter-spacing: -.045em; line-height: .94; }
+    .h1 em { font-style: normal; color: var(--acc); }
 
-    @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
-    @keyframes popIn{from{transform:scale(0) rotate(-12deg);opacity:0}to{transform:scale(1) rotate(-6deg);opacity:1}}
-    @keyframes toastIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-    @keyframes toastOut{from{opacity:1}to{opacity:0;transform:translateY(-8px)}}
-    @keyframes spin{to{transform:rotate(360deg)}}
-    @keyframes spinCW{to{transform:rotate(360deg)}}
-    @keyframes spinCCW{to{transform:rotate(-360deg)}}
-    .reel-cw{transform-box:fill-box;transform-origin:center;animation:spinCW 3s linear infinite}
-    .reel-ccw{transform-box:fill-box;transform-origin:center;animation:spinCCW 4s linear infinite}
-    @keyframes shakeX{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+    .pill {
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      height: 42px; padding: 0 22px; border-radius: 999px;
+      font-family: var(--ff-m); font-size: 11px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase;
+      text-decoration: none; white-space: nowrap;
+      background: var(--ink); color: var(--ground); border: 1px solid var(--ink);
+      transition: background-color .6s var(--ease), color .6s var(--ease), border-color .6s var(--ease), opacity .4s;
+    }
+    .pill::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; transition: background-color .6s var(--ease); }
+    .pill:hover::before { background: var(--acc-lift); }
+    .pill.ghost { background: transparent; color: var(--ink); border-color: rgba(13, 13, 15, .2); }
+    .pill.ghost::before { display: none; }
+    .pill.ghost:hover { border-color: var(--ink); }
+    .pill:disabled { opacity: .35; cursor: not-allowed; }
 
-    /* ── HEADER ── */
-    header {
-      position:sticky; top:0; z-index:100;
-      height:var(--navH); display:flex; align-items:center; justify-content:space-between;
-      padding:0 1.5rem; background:var(--paper); border-bottom:2px solid var(--ink);
+    /* ── Nav ── */
+    .nav {
+      position: fixed; inset: 0 0 auto; z-index: 50; height: var(--nav);
+      display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 0 var(--gut);
+      background: rgb(239 239 238 / .82); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--hair);
     }
-    .logo{display:flex;align-items:center;gap:.6rem;font-family:var(--ff-d);font-size:1.25rem;font-weight:800;letter-spacing:.02em;text-transform:uppercase;color:var(--ink);text-decoration:none}
-    .logo-mark{width:30px;height:20px;border:2px solid var(--ink);position:relative;background:var(--acc);flex-shrink:0}
-    .logo-mark::before,.logo-mark::after{content:'';position:absolute;top:50%;transform:translateY(-50%);width:6px;height:6px;border:1.5px solid var(--ink);border-radius:50%;background:var(--paper)}
-    .logo-mark::before{left:3px}.logo-mark::after{right:3px}
-    .hdr-right{display:flex;align-items:center;gap:.75rem}
-    .lang-tog{
-      font-family:var(--ff-m);font-size:.72rem;font-weight:600;letter-spacing:.06em;
-      background:transparent;border:2px solid var(--ink);color:var(--ink);
-      padding:.35rem .6rem;cursor:pointer;transition:all .15s var(--ease);
+    .brand { font-weight: 800; font-size: 16px; letter-spacing: -.035em; text-decoration: none; }
+    .brand i { font-style: normal; color: var(--acc); }
+    .nav-right { display: flex; align-items: center; gap: 28px; }
+    .nav-links { display: flex; gap: 28px; list-style: none; }
+    .nav-links a, .lang {
+      font-family: var(--ff-m); font-size: 11px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase;
+      color: var(--ink2); text-decoration: none; padding: 4px 0; border-bottom: 1px solid transparent;
+      transition: border-color .5s var(--ease), color .5s var(--ease);
     }
-    .lang-tog:hover{background:var(--ink);color:var(--paper)}
-    .nav-back{
-      display:flex;align-items:center;gap:.5rem;padding:.45rem .9rem;
-      background:transparent;border:2px solid var(--ink);color:var(--ink);
-      font-family:var(--ff-m);font-size:.74rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
-      text-decoration:none;transition:all .15s var(--ease);
-    }
-    .nav-back:hover{background:var(--ink);color:var(--paper)}
+    .nav-links a:hover, .lang:hover { color: var(--ink); border-bottom-color: var(--acc); }
+    .lang b { font-weight: 500; color: var(--ink); }
+    .nav .pill { height: 38px; padding: 0 18px; }
 
-    /* ── LAYOUT ── */
-    .cart-page{max-width:1240px;margin:0 auto;padding:3.5rem 2rem 5rem;display:grid;grid-template-columns:1fr 420px;gap:3rem;align-items:start}
+    /* ── Page ── */
+    .page { padding: calc(var(--nav) + clamp(40px, 7vh, 80px)) var(--gut) clamp(72px, 11vh, 128px); }
+    .sec-label { display: flex; align-items: center; gap: 18px; color: var(--acc); margin-bottom: clamp(36px, 6vh, 64px); }
+    .sec-label::after { content: ''; flex: 1; height: 1px; background: var(--hair); }
+    .grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: clamp(32px, 5vw, 88px); align-items: start; }
+    .items-sub { color: var(--muted); margin-top: 18px; }
 
-    .items-col h1{font-size:clamp(2rem,4vw,3rem);font-weight:800;text-transform:uppercase;margin-bottom:.4rem}
-    .items-col h1 .hit{color:var(--acc)}
-    .items-sub{font-family:var(--ff-m);font-size:.74rem;color:var(--ink2);margin-bottom:2rem;letter-spacing:.08em;text-transform:uppercase}
+    .empty { margin-top: 40px; padding: 28px 0; border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair); display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; }
+    .empty p { color: var(--ink2); max-width: 36ch; }
 
-    /* empty state */
-    .cart-empty{padding:3.5rem 2rem;text-align:center;border:2px dashed var(--ink2);background:var(--paper2)}
-    .ce-icon{font-size:2.4rem;display:block;margin-bottom:.8rem;opacity:.45}
-    .ce-txt{font-family:var(--ff-m);font-size:.85rem;color:var(--ink2);margin-bottom:1.5rem}
-    .btn{
-      display:inline-flex;align-items:center;justify-content:center;gap:.6rem;
-      font-family:var(--ff-d);font-weight:700;letter-spacing:.04em;text-transform:uppercase;
-      text-decoration:none;cursor:pointer;transition:all .15s var(--ease);
-      border:2px solid var(--ink);
-    }
-    .btn-solid{background:var(--acc);color:var(--paper);padding:.8rem 1.7rem;font-size:.9rem;box-shadow:4px 4px 0 var(--ink)}
-    .btn-solid:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink)}
-    .btn-solid:active{transform:none;box-shadow:2px 2px 0 var(--ink)}
+    .items { list-style: none; margin-top: 40px; border-bottom: 1px solid var(--hair); }
+    .item { display: grid; grid-template-columns: 148px minmax(0, 1fr) auto; gap: 24px; padding: 22px 0; border-top: 1px solid var(--hair); align-items: start; }
+    .thumb { aspect-ratio: 108 / 70; display: grid; place-items: center; padding: 6px; }
+    .thumb svg { width: 100%; height: auto; overflow: visible; }
+    .ci-name { font-weight: 700; font-size: 20px; letter-spacing: -.02em; line-height: 1.15; }
+    .ci-meta { color: var(--muted); margin-top: 6px; }
+    .ci-tracks { list-style: none; margin-top: 12px; font-family: var(--ff-m); font-size: 12px; color: var(--ink2); columns: 2; column-gap: 24px; }
+    .ci-tracks li { break-inside: avoid; padding: 2px 0; }
+    .ci-tracks li span { color: var(--muted); margin-right: 8px; }
+    .ci-side { display: flex; flex-direction: column; align-items: flex-end; gap: 14px; }
+    .ci-price { font-family: var(--ff-m); font-size: 13px; font-variant-numeric: tabular-nums; }
+    .qty { display: inline-flex; align-items: center; height: 34px; border: 1px solid rgba(13, 13, 15, .2); border-radius: 999px; }
+    .qty button { width: 34px; height: 32px; font-family: var(--ff-m); font-size: 14px; color: var(--ink2); }
+    .qty button:hover:not(:disabled) { color: var(--ink); }
+    .qty button:disabled { opacity: .3; cursor: not-allowed; }
+    .qty span { min-width: 22px; text-align: center; font-family: var(--ff-m); font-size: 12px; font-variant-numeric: tabular-nums; }
+    .ci-rm { color: var(--muted); border-bottom: 1px solid transparent; }
+    .ci-rm:hover { color: var(--ink); border-bottom-color: var(--acc); }
 
-    /* cart item */
-    .cart-item{
-      display:flex;gap:1.3rem;padding:1.15rem;background:var(--paper);
-      border:2px solid var(--ink);margin-bottom:.9rem;position:relative;
-      animation:fadeUp .3s var(--ease) both;box-shadow:4px 4px 0 rgba(27,23,18,.12);
-    }
-    .ci-thumb{width:96px;flex-shrink:0;border:1.5px solid var(--line);align-self:flex-start}
-    .ci-details{flex:1;min-width:0}
-    .ci-name{font-family:var(--ff-d);font-size:1.02rem;font-weight:800;text-transform:uppercase;margin-bottom:.15rem}
-    .ci-meta{font-family:var(--ff-m);font-size:.62rem;color:var(--ink2);margin-bottom:.5rem;letter-spacing:.1em;text-transform:uppercase}
-    .ci-tracks{font-family:var(--ff-m);font-size:.68rem;color:var(--ink2);line-height:1.6;max-width:360px;border-left:2px solid var(--line);padding-left:.7rem}
-    .ci-row{display:flex;align-items:center;justify-content:space-between;margin-top:.8rem;gap:1rem;flex-wrap:wrap}
-    .ci-price{font-family:var(--ff-d);font-size:1.1rem;font-weight:800}
-    .ci-qty{display:flex;align-items:center;border:2px solid var(--ink)}
-    .qty-btn{width:30px;height:30px;background:var(--paper);border:none;cursor:pointer;font-size:.95rem;color:var(--ink);font-family:var(--ff-m);transition:all .15s;display:flex;align-items:center;justify-content:center}
-    .qty-btn:hover:not(:disabled){background:var(--ink);color:var(--paper)}
-    .qty-btn:disabled{opacity:.3;cursor:not-allowed}
-    .qty-n{font-family:var(--ff-m);font-size:.85rem;font-weight:600;min-width:2rem;text-align:center;border-left:2px solid var(--ink);border-right:2px solid var(--ink);line-height:30px}
-    .ci-rm{
-      position:absolute;top:.6rem;right:.6rem;width:24px;height:24px;
-      background:transparent;border:none;color:var(--ink2);cursor:pointer;font-size:.8rem;
-      transition:all .15s;display:flex;align-items:center;justify-content:center;
-    }
-    .ci-rm:hover{color:var(--acc)}
+    .summary { margin-top: 28px; }
+    .summary > div { display: flex; justify-content: space-between; align-items: baseline; gap: 24px; padding: 12px 0; border-top: 1px solid var(--hair); }
+    .summary dt { color: var(--ink2); }
+    .summary dd { font-family: var(--ff-m); font-size: 12px; font-variant-numeric: tabular-nums; }
+    .summary .total { border-bottom: 1px solid var(--hair); padding: 18px 0; }
+    .summary .total dt { color: var(--ink); }
+    .summary .total dd { font-family: var(--ff-d); font-weight: 800; font-size: clamp(34px, 3.6vw, 48px); letter-spacing: -.045em; line-height: .9; }
 
-    /* order summary — receipt */
-    .order-summary{
-      margin-top:1.4rem;background:var(--paper);border:2px solid var(--ink);
-      padding:1.2rem 1.4rem;box-shadow:4px 4px 0 rgba(27,23,18,.12);
-      position:relative;
+    /* ── Order form ── */
+    .form-col { position: sticky; top: calc(var(--nav) + 32px); }
+    .form-head { display: flex; justify-content: space-between; gap: 16px; padding-bottom: 14px; border-bottom: 1px solid var(--ink); }
+    .form-head span:last-child { color: var(--muted); }
+    .fs { margin-top: 28px; }
+    .fs-title { color: var(--acc); margin-bottom: 4px; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 0 20px; }
+    .row.full { grid-template-columns: 1fr; }
+    .fg { display: flex; flex-direction: column; padding-top: 14px; }
+    .fg label { color: var(--muted); }
+    .fg.required label::after { content: ' *'; color: var(--acc); }
+    .inp {
+      width: 100%; border: 0; border-bottom: 1px solid rgba(13, 13, 15, .24); border-radius: 0; background: transparent;
+      color: var(--ink); font-family: var(--ff-d); font-size: 16px; padding: 8px 0 9px; outline: 0;
+      -webkit-appearance: none; appearance: none; transition: border-color .4s var(--ease);
     }
-    .order-summary::before{
-      content:'';position:absolute;top:-2px;left:0;right:0;height:8px;
-      background:repeating-linear-gradient(90deg,var(--ink) 0 8px,transparent 8px 16px);
-    }
-    .os-row{display:flex;justify-content:space-between;align-items:baseline;padding:.5rem 0;border-bottom:1px dashed var(--line)}
-    .os-row:last-child{border-bottom:none}
-    .os-lbl{color:var(--ink2);font-family:var(--ff-m);font-size:.66rem;text-transform:uppercase;letter-spacing:.14em}
-    .os-val{font-family:var(--ff-m);font-size:.85rem;font-weight:600}
-    .os-total .os-lbl{color:var(--ink);font-weight:600}
-    .os-total .os-val{font-family:var(--ff-d);font-size:1.6rem;font-weight:800;color:var(--acc)}
+    .inp::placeholder { color: rgba(13, 13, 15, .32); }
+    .inp:focus { border-bottom-color: var(--ink); }
+    select.inp { cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%230D0D0F' stroke-width='1.2' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 2px center; padding-right: 20px; }
+    textarea.inp { resize: vertical; min-height: 72px; }
+    .fg.invalid .inp { border-bottom-color: var(--acc); }
+    .field-msg { display: none; color: var(--acc); margin-top: 6px; }
+    .fg.invalid .field-msg { display: block; }
+    .pay { width: 100%; margin-top: 32px; height: 50px; }
+    .pay-note { color: var(--muted); margin-top: 14px; }
+    .spinner { width: 12px; height: 12px; border: 1px solid rgba(239, 239, 238, .4); border-top-color: var(--ground); border-radius: 50%; animation: spin .8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ── CHECKOUT ── */
-    .checkout-col{position:sticky;top:calc(var(--navH) + 1.5rem)}
-    .checkout-box{background:var(--paper);border:2px solid var(--ink);box-shadow:6px 6px 0 rgba(27,23,18,.15)}
-    .co-head{
-      display:flex;justify-content:space-between;align-items:center;
-      padding:.7rem 1.3rem;background:var(--ink);color:var(--paper);
-      font-family:var(--ff-m);font-size:.7rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
-    }
-    .co-head em{font-style:normal;color:var(--acc)}
-    .co-body{padding:1.5rem 1.4rem}
+    #successState { display: none; padding-top: 8px; }
+    #successState.show { display: block; }
+    .ok-mark { display: flex; align-items: center; gap: 10px; color: var(--acc); }
+    .ok-mark::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--acc); }
+    .success-title { font-weight: 800; font-size: clamp(34px, 3.6vw, 48px); letter-spacing: -.045em; line-height: .96; margin-top: 18px; }
+    .success-sub { color: var(--ink2); margin-top: 16px; max-width: 40ch; }
+    .success-sub em { font-style: normal; color: var(--ink); border-bottom: 1px solid var(--acc); }
+    .success-order { margin-top: 24px; padding: 12px 0; border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair); }
+    #successState .pill { margin-top: 28px; }
 
-    .form-section{margin-bottom:1.6rem}
-    .form-section:last-of-type{margin-bottom:0}
-    .form-section-title{
-      font-family:var(--ff-m);font-size:.64rem;text-transform:uppercase;letter-spacing:.18em;color:var(--acc);
-      margin-bottom:.9rem;display:flex;align-items:center;gap:.6rem;font-weight:600;
-    }
-    .form-section-title::after{content:'';flex:1;height:1px;background:var(--line)}
-
-    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
-    .form-row.full{grid-template-columns:1fr}
-    .form-group{display:flex;flex-direction:column;gap:.3rem;margin-bottom:.8rem}
-    .form-label{font-family:var(--ff-m);font-size:.62rem;text-transform:uppercase;letter-spacing:.12em;color:var(--ink2);font-weight:500}
-    .form-group.required .form-label::after{content:' *';color:var(--acc)}
-    .form-input, .form-select{
-      width:100%;padding:.65rem .8rem;
-      background:var(--paper);border:2px solid var(--ink);border-radius:0;
-      color:var(--ink);font-family:var(--ff-m);font-size:.85rem;
-      outline:none;transition:all .15s;
-      -webkit-appearance:none;appearance:none;
-    }
-    .form-input::placeholder{color:var(--ink2);opacity:.6}
-    .form-input:focus,.form-select:focus{border-color:var(--acc);box-shadow:3px 3px 0 rgba(255,77,0,.35)}
-    .form-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%231B1712' stroke-width='2' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .8rem center;padding-right:2.2rem;cursor:pointer}
-
-    .form-group.invalid .form-input{border-color:var(--acc);box-shadow:3px 3px 0 rgba(255,77,0,.35)}
-    .form-group.invalid{animation:shakeX .25s var(--ease)}
-    .field-msg{font-family:var(--ff-m);font-size:.6rem;color:var(--acc);letter-spacing:.04em;display:none;font-weight:600}
-    .form-group.invalid .field-msg{display:block}
-
-    .btn-pay{
-      width:100%;padding:1rem;margin-top:1.3rem;
-      background:var(--acc);color:var(--paper);border:2px solid var(--ink);
-      font-family:var(--ff-d);font-size:1.02rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;
-      cursor:pointer;transition:all .15s var(--ease);box-shadow:4px 4px 0 var(--ink);
-      display:flex;align-items:center;justify-content:center;gap:.6rem;
-    }
-    .btn-pay:hover:not(:disabled){transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink)}
-    .btn-pay:active:not(:disabled){transform:none;box-shadow:2px 2px 0 var(--ink)}
-    .btn-pay:disabled{opacity:.4;cursor:not-allowed;box-shadow:none}
-    .btn-pay.loading{opacity:.75;cursor:not-allowed;pointer-events:none}
-    .spinner{width:15px;height:15px;border:2px solid rgba(244,238,225,.4);border-top-color:var(--paper);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
-    .pay-note{font-family:var(--ff-m);font-size:.62rem;color:var(--ink2);text-align:center;margin-top:.8rem;line-height:1.7}
-
-    /* success */
-    #successState{display:none;padding:3rem 2rem;text-align:center;animation:fadeUp .5s var(--ease) both}
-    #successState.show{display:block}
-    .success-stamp{
-      width:110px;height:110px;border:3px solid var(--ok);border-radius:50%;
-      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.1rem;
-      margin:0 auto 1.4rem;color:var(--ok);transform:rotate(-6deg);
-      font-family:var(--ff-m);font-size:.6rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
-      animation:popIn .5s var(--spring) both;
-    }
-    .success-stamp b{font-size:1.5rem;line-height:1}
-    .success-title{font-family:var(--ff-d);font-size:1.6rem;font-weight:800;text-transform:uppercase;margin-bottom:.5rem}
-    .success-sub{font-family:var(--ff-m);font-size:.76rem;color:var(--ink2);line-height:1.8}
-    .success-highlight{color:var(--ink);font-weight:600;font-style:normal}
-    .success-order{font-family:var(--ff-m);font-size:.7rem;margin-top:1.1rem;padding:.5rem 1rem;background:var(--paper2);border:2px solid var(--ink);display:inline-block;letter-spacing:.1em;font-weight:600}
-    .btn-continue{display:inline-flex;align-items:center;gap:.5rem;padding:.7rem 1.5rem;background:transparent;border:2px solid var(--ink);color:var(--ink);font-family:var(--ff-m);font-size:.74rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:all .15s;margin-top:1.6rem}
-    .btn-continue:hover{background:var(--ink);color:var(--paper)}
-
-    /* ── TOASTS ── */
-    #toasts{position:fixed;bottom:1.6rem;left:50%;transform:translateX(-50%);z-index:500;display:flex;flex-direction:column;gap:.5rem;align-items:center}
-    .toast{
-      display:flex;align-items:center;gap:.6rem;padding:.65rem 1.3rem;
-      background:var(--ink);color:var(--paper);border:2px solid var(--ink);
-      font-family:var(--ff-m);font-size:.78rem;box-shadow:4px 4px 0 rgba(27,23,18,.3);
-      animation:toastIn .35s var(--spring) both;white-space:nowrap;
-    }
-    .toast .tic{color:var(--acc);font-weight:700}
-    .toast button{background:transparent;border:none;color:var(--acc);font-family:inherit;font-size:inherit;font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:0}
-    .toast.removing{animation:toastOut .3s var(--ease) both}
-
-    /* ── FOOTER ── */
-    footer{
-      border-top:2px solid var(--ink);padding:2rem;
-      display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1.2rem;background:var(--paper);
-    }
-    .footer-logo{font-family:var(--ff-d);font-size:.95rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
-    .footer-logo em{color:var(--acc);font-style:normal}
-    .barcode-wrap{display:flex;flex-direction:column;align-items:center;gap:.3rem}
-    .barcode{
-      height:26px;width:120px;
-      background:repeating-linear-gradient(to right,
-        var(--ink) 0 1px, transparent 1px 3px, var(--ink) 3px 5px, transparent 5px 7px,
-        var(--ink) 7px 8px, transparent 8px 11px, var(--ink) 11px 13px, transparent 13px 16px,
-        var(--ink) 16px 17px, transparent 17px 19px);
-    }
-    .barcode-serial{font-family:var(--ff-m);font-size:.55rem;letter-spacing:.2em;color:var(--ink2);text-transform:uppercase}
-    .footer-txt{font-family:var(--ff-m);font-size:.66rem;color:var(--ink2)}
-
-    /* ── REDUCED MOTION ── */
-    @media (prefers-reduced-motion:reduce){
-      html{scroll-behavior:auto}
-      .reel-cw,.reel-ccw{animation:none}
-      *,*::before,*::after{transition-duration:.01ms !important;animation-duration:.01ms !important;animation-iteration-count:1 !important}
+    /* ── Footer ── */
+    .close { background: var(--stage); overflow: clip; }
+    .foot { display: flex; align-items: center; gap: 12px 32px; flex-wrap: wrap; margin: 0 var(--gut); padding: 18px 0; border-top: 1px solid var(--hair); color: var(--ink2); }
+    .foot > :last-child { margin-left: auto; text-decoration: none; }
+    .close-word {
+      display: flex; justify-content: space-between; padding: 0 var(--gut); margin-top: clamp(24px, 4vh, 48px);
+      font-weight: 900; font-size: clamp(84px, 19.5vw, 300px); line-height: .74; letter-spacing: -.055em;
+      transform: translateY(.19em); pointer-events: none; user-select: none;
     }
 
-    /* ── RESPONSIVE ── */
-    @media(max-width:960px){
-      .cart-page{grid-template-columns:1fr;padding:2.5rem 1.5rem 4rem}
-      .checkout-col{position:static}
+    #toasts { position: fixed; left: 50%; bottom: 20px; z-index: 60; transform: translateX(-50%); display: flex; flex-direction: column; gap: 8px; align-items: center; }
+    .toast { display: flex; align-items: center; gap: 12px; padding: 13px 18px; background: var(--ink); color: #EFEFEE; white-space: nowrap; }
+    .toast::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--acc-lift); }
+    .toast button { color: var(--acc-lift); border-bottom: 1px solid currentColor; font: inherit; letter-spacing: inherit; text-transform: inherit; }
+
+    /* shared cassette line drawing */
+    .pv * { vector-effect: non-scaling-stroke; }
+    .pv .o { fill: none; stroke: currentColor; stroke-width: 1.25; }
+    .pv .t { fill: none; stroke: currentColor; stroke-width: .75; }
+    .pv .h { fill: none; stroke: color-mix(in srgb, currentColor 40%, transparent); stroke-width: .75; }
+    .pv .dash { stroke-dasharray: 3 3; }
+    .pv .lbl { fill: color-mix(in srgb, currentColor 9%, transparent); stroke: currentColor; stroke-width: .75; }
+    .pv .pack { fill: color-mix(in srgb, currentColor 16%, transparent); stroke: color-mix(in srgb, currentColor 55%, transparent); stroke-width: .75; }
+    .pv .win { fill: color-mix(in srgb, currentColor 6%, transparent); stroke: currentColor; stroke-width: .75; }
+    .pv text { fill: currentColor; font-family: var(--ff-m); }
+    .pv .wm { font-family: var(--ff-d); font-weight: 900; letter-spacing: -.04em; }
+
+    @media (prefers-reduced-motion: reduce) { .spinner { animation-duration: 2.4s; } .pill, .inp { transition: none; } }
+    @media (max-width: 980px) {
+      .grid { grid-template-columns: minmax(0, 1fr); }
+      .form-col { position: static; }
+      .nav-links { display: none; }
     }
-    @media(max-width:600px){
-      header{padding:0 1rem}
-      .cart-page{padding:2rem 1rem 3.5rem;gap:2rem}
-      .form-row{grid-template-columns:1fr}
-      .ci-thumb{width:72px}
-      .cart-item{gap:1rem;padding:1rem}
-      footer{flex-direction:column;align-items:flex-start;padding:1.5rem 1rem}
+    @media (max-width: 600px) {
+      .item { grid-template-columns: 96px minmax(0, 1fr); gap: 16px; }
+      .ci-side { grid-column: 1 / -1; flex-direction: row; justify-content: space-between; align-items: center; }
+      .ci-tracks { columns: 1; }
+      .row { grid-template-columns: 1fr; }
+      .foot > :last-child { margin-left: 0; }
     }
+    @media (max-width: 420px) { .nav .lang { display: none; } }
   </style>
 </head>
 <body>
 
-<header>
-  <a href="index.html" class="logo"><span class="logo-mark" aria-hidden="true"></span>Taped<span style="color:var(--acc)">Up</span></a>
-  <div class="hdr-right">
-    <button class="lang-tog" id="langTog" onclick="cycleLang()" title="Language / Taal">EN</button>
-    <a href="index.html" class="nav-back" data-tx="nav.shop">← Keep shopping</a>
+<nav class="nav" aria-label="Main">
+  <a class="brand" href="index.html">Taped Up<i>.</i></a>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li><a href="index.html#speed" data-tx="nav.speed">Speed</a></li>
+      <li><a href="index.html#reel" data-tx="nav.reel">Reel</a></li>
+      <li><a href="index.html#shell" data-tx="nav.shell">Shell</a></li>
+      <li><a href="index.html#build" data-tx="nav.build">Build</a></li>
+      <li><a href="index.html#specs" data-tx="nav.specs">Specs</a></li>
+    </ul>
+    <button class="lang" type="button" data-lang-toggle title="Language / Taal"><b>EN</b> / NL</button>
+    <a class="pill ghost" href="index.html#build" data-tx="nav.shop">Keep shopping</a>
   </div>
-</header>
+</nav>
 
-<main class="cart-page">
-  <!-- ═════ LEFT: Items ═════ -->
-  <div class="items-col">
-    <h1><span data-tx="cart.title1">Your</span> <span class="hit" data-tx="cart.title2">cart</span></h1>
-    <p class="items-sub" id="itemsSub">…</p>
+<main class="page">
+  <p class="meta sec-label" data-tx="cart.label">Cart — Order form</p>
+  <div class="grid">
+    <!-- ═════ Items ═════ -->
+    <section aria-labelledby="cartTitle">
+      <h1 class="h1" id="cartTitle" data-tx="cart.title">Your <em>cart.</em></h1>
+      <p class="meta items-sub" id="itemsSub">…</p>
 
-    <div id="emptyMsg" class="cart-empty" style="display:none">
-      <span class="ce-icon">⏮</span>
-      <p class="ce-txt" data-tx="cart.empty.text">No tapes yet. Time to build something.</p>
-      <a href="index.html" class="btn btn-solid" data-tx="cart.empty.btn">▶ Build your tape</a>
-    </div>
-
-    <div id="cartItems"></div>
-
-    <div class="order-summary" id="orderSummary" style="display:none">
-      <div class="os-row">
-        <span class="os-lbl" data-tx="sum.subtotal">Subtotal</span>
-        <span class="os-val" id="osSubtotal">$0.00</span>
+      <div class="empty" id="emptyMsg" hidden>
+        <p data-tx="cart.empty.text">No tapes yet. Time to build something.</p>
+        <a class="pill" href="index.html#build" data-tx="cart.empty.btn">Build your tape</a>
       </div>
-      <div class="os-row">
-        <span class="os-lbl" data-tx="sum.shipping">Shipping</span>
-        <span class="os-val" style="color:var(--ok)" data-tx="sum.free">Free</span>
-      </div>
-      <div class="os-row os-total">
-        <span class="os-lbl" data-tx="sum.total">Total</span>
-        <span class="os-val" id="osTotal">$0.00</span>
-      </div>
-    </div>
-  </div>
 
-  <!-- ═════ RIGHT: Checkout ═════ -->
-  <div class="checkout-col">
-    <div class="checkout-box">
-      <div class="co-head"><span data-tx="co.title">Order form</span><em>TU-1996</em></div>
-      <div class="co-body" id="formBody">
+      <ul class="items" id="cartItems"></ul>
 
-        <!-- Contact -->
-        <div class="form-section">
-          <div class="form-section-title" data-tx="co.contact">Contact</div>
-          <div class="form-row">
-            <div class="form-group required">
-              <label class="form-label" for="fFirstName" data-tx="co.firstname">First name</label>
-              <input class="form-input" type="text" data-tx-ph="ph.first" placeholder="First" id="fFirstName" autocomplete="given-name">
-              <div class="field-msg" id="msg-fFirstName"></div>
+      <dl class="summary" id="orderSummary" hidden>
+        <div><dt class="meta" data-tx="sum.subtotal">Subtotal</dt><dd id="osSubtotal">$0.00</dd></div>
+        <div><dt class="meta" data-tx="sum.shipping">Shipping</dt><dd data-tx="sum.free">Free</dd></div>
+        <div class="total"><dt class="meta" data-tx="sum.total">Total</dt><dd id="osTotal">$0.00</dd></div>
+      </dl>
+    </section>
+
+    <!-- ═════ Order form ═════ -->
+    <section class="form-col" aria-labelledby="formTitle">
+      <p class="meta form-head"><span id="formTitle" data-tx="co.title">Order form</span><span>TU-1996</span></p>
+      <div id="formBody">
+        <div class="fs">
+          <p class="meta fs-title" data-tx="co.contact">Contact</p>
+          <div class="row">
+            <div class="fg required">
+              <label class="meta" for="fFirstName" data-tx="co.firstname">First name</label>
+              <input class="inp" type="text" data-tx-ph="ph.first" placeholder="First" id="fFirstName" autocomplete="given-name">
+              <p class="meta field-msg" id="msg-fFirstName"></p>
             </div>
-            <div class="form-group required">
-              <label class="form-label" for="fLastName" data-tx="co.lastname">Last name</label>
-              <input class="form-input" type="text" data-tx-ph="ph.last" placeholder="Last" id="fLastName" autocomplete="family-name">
-              <div class="field-msg" id="msg-fLastName"></div>
+            <div class="fg required">
+              <label class="meta" for="fLastName" data-tx="co.lastname">Last name</label>
+              <input class="inp" type="text" data-tx-ph="ph.last" placeholder="Last" id="fLastName" autocomplete="family-name">
+              <p class="meta field-msg" id="msg-fLastName"></p>
             </div>
           </div>
-          <div class="form-row full">
-            <div class="form-group required">
-              <label class="form-label" for="fEmail" data-tx="co.email">Email address</label>
-              <input class="form-input" type="email" placeholder="you@example.com" id="fEmail" autocomplete="email">
-              <div class="field-msg" id="msg-fEmail"></div>
+          <div class="row full">
+            <div class="fg required">
+              <label class="meta" for="fEmail" data-tx="co.email">Email address</label>
+              <input class="inp" type="email" placeholder="you@example.com" id="fEmail" autocomplete="email">
+              <p class="meta field-msg" id="msg-fEmail"></p>
             </div>
           </div>
-          <div class="form-row full">
-            <div class="form-group">
-              <label class="form-label" for="fPhone" data-tx="co.phone">Phone (optional)</label>
-              <input class="form-input" type="tel" placeholder="+1 555 000 0000" id="fPhone" autocomplete="tel">
+          <div class="row full">
+            <div class="fg">
+              <label class="meta" for="fPhone" data-tx="co.phone">Phone (optional)</label>
+              <input class="inp" type="tel" placeholder="+1 555 000 0000" id="fPhone" autocomplete="tel">
             </div>
           </div>
         </div>
 
-        <!-- Shipping -->
-        <div class="form-section">
-          <div class="form-section-title" data-tx="co.shipping">Shipping address</div>
-          <div class="form-row full">
-            <div class="form-group required">
-              <label class="form-label" for="fAddress" data-tx="co.address">Street address</label>
-              <input class="form-input" type="text" data-tx-ph="ph.address" placeholder="123 Analog Way" id="fAddress" autocomplete="street-address">
-              <div class="field-msg" id="msg-fAddress"></div>
+        <div class="fs">
+          <p class="meta fs-title" data-tx="co.shipping">Shipping address</p>
+          <div class="row full">
+            <div class="fg required">
+              <label class="meta" for="fAddress" data-tx="co.address">Street address</label>
+              <input class="inp" type="text" data-tx-ph="ph.address" placeholder="123 Analog Way" id="fAddress" autocomplete="street-address">
+              <p class="meta field-msg" id="msg-fAddress"></p>
             </div>
           </div>
-          <div class="form-row">
-            <div class="form-group required">
-              <label class="form-label" for="fCity" data-tx="co.city">City</label>
-              <input class="form-input" type="text" placeholder="London" id="fCity" autocomplete="address-level2">
-              <div class="field-msg" id="msg-fCity"></div>
+          <div class="row">
+            <div class="fg required">
+              <label class="meta" for="fCity" data-tx="co.city">City</label>
+              <input class="inp" type="text" placeholder="London" id="fCity" autocomplete="address-level2">
+              <p class="meta field-msg" id="msg-fCity"></p>
             </div>
-            <div class="form-group">
-              <label class="form-label" for="fState" data-tx="co.state">State / Province</label>
-              <input class="form-input" type="text" placeholder="England" id="fState" autocomplete="address-level1">
+            <div class="fg">
+              <label class="meta" for="fState" data-tx="co.state">State / Province</label>
+              <input class="inp" type="text" placeholder="England" id="fState" autocomplete="address-level1">
             </div>
           </div>
-          <div class="form-row">
-            <div class="form-group required">
-              <label class="form-label" for="fZip" data-tx="co.zip">ZIP / Postal code</label>
-              <input class="form-input" type="text" placeholder="EC1A 1BB" id="fZip" autocomplete="postal-code">
-              <div class="field-msg" id="msg-fZip"></div>
+          <div class="row">
+            <div class="fg required">
+              <label class="meta" for="fZip" data-tx="co.zip">ZIP / Postal code</label>
+              <input class="inp" type="text" placeholder="EC1A 1BB" id="fZip" autocomplete="postal-code">
+              <p class="meta field-msg" id="msg-fZip"></p>
             </div>
-            <div class="form-group">
-              <label class="form-label" for="fCountry" data-tx="co.country">Country</label>
-              <select class="form-select" id="fCountry">
+            <div class="fg">
+              <label class="meta" for="fCountry" data-tx="co.country">Country</label>
+              <select class="inp" id="fCountry">
                 <option value="" data-tx="co.country.placeholder">Select country…</option>
                 <option>United Kingdom</option>
                 <option>United States</option>
@@ -387,47 +307,45 @@
           </div>
         </div>
 
-        <!-- Note -->
-        <div class="form-section">
-          <div class="form-section-title" data-tx="co.note">Order note (optional)</div>
-          <div class="form-row full">
-            <div class="form-group" style="margin-bottom:0">
-              <textarea class="form-input" id="fNote" data-tx-ph="co.note.placeholder" placeholder="Any special requests or questions…" rows="3" style="resize:vertical;min-height:70px"></textarea>
+        <div class="fs">
+          <p class="meta fs-title" data-tx="co.note">Order note (optional)</p>
+          <div class="row full">
+            <div class="fg">
+              <label class="meta" for="fNote" data-tx="co.note.label">Note</label>
+              <textarea class="inp" id="fNote" data-tx-ph="co.note.placeholder" placeholder="Any special requests or questions…" rows="3"></textarea>
             </div>
           </div>
         </div>
 
-        <button class="btn-pay" id="payBtn" onclick="placeOrder()" disabled>
+        <button class="pill pay" type="button" id="payBtn" disabled>
           <span id="payBtnLabel" data-tx="co.placeorder">Place order —</span> <span id="payTotal">$0.00</span>
         </button>
-        <p class="pay-note" data-tx="co.paynote">
-          No payment is taken now. Our team will review your order and contact you to arrange payment and confirm production.
-        </p>
+        <p class="meta pay-note" data-tx="co.paynote">No payment is taken now. Our team will review your order and contact you to arrange payment and confirm production.</p>
       </div>
 
       <!-- Success -->
-      <div id="successState">
-        <div class="success-stamp"><b>✓</b><span data-tx="co.stamp">Received</span></div>
-        <div class="success-title" data-tx="co.success.title">Order received!</div>
+      <div id="successState" role="status">
+        <p class="meta ok-mark" data-tx="co.stamp">Received</p>
+        <h2 class="success-title" data-tx="co.success.title">Order received.</h2>
         <p class="success-sub" id="successMsg"></p>
-        <div class="success-order" id="successOrderNum"></div>
-        <br>
-        <a href="index.html" class="btn-continue" data-tx="co.success.continue">← Build another tape</a>
+        <p class="meta success-order" id="successOrderNum"></p>
+        <a class="pill ghost" href="index.html#build" data-tx="co.success.continue">Build another tape</a>
       </div>
-    </div>
+    </section>
   </div>
 </main>
 
-<footer>
-  <span class="footer-logo">Taped<em> Up</em></span>
-  <div class="barcode-wrap" aria-hidden="true">
-    <div class="barcode"></div>
-    <div class="barcode-serial">TU-1996-A · EN/NL</div>
+<footer class="close">
+  <div class="meta foot">
+    <span>© 2026 Taped Up</span>
+    <span data-tx="foot.since">Hand-dubbed since 1996</span>
+    <button class="lang" type="button" data-lang-toggle><b>EN</b> / NL</button>
+    <a href="index.html" data-tx="foot.home">Taped Up home ↑</a>
   </div>
-  <span class="footer-txt" data-tx="footer.txt">© 2026 Taped Up. Built with analog love.</span>
+  <div class="close-word" aria-hidden="true"><span>T</span><span>A</span><span>P</span><span>E</span><span>D</span></div>
 </footer>
 
-<div id="toasts"></div>
+<div id="toasts" aria-live="polite"></div>
 
 <script>
 /* ══════════════════════════════════════════════════════
@@ -440,370 +358,324 @@
 ══════════════════════════════════════════════════════ */
 const FORMSPREE_ENDPOINT = 'https://formspree.io/f/YOUR_FORM_ID';
 
-/* ─── DATA ─── */
+/* ─── DATA (keep in sync with index.html) ─── */
 const COLORS = [
-  {id:'pitch',   name:'Pitch Black',  nameNL:'Gitzwart',     body:'#1C1814', label:'#282018', accent:'#D09050', lTxt:'#907060'},
-  {id:'arctic',  name:'Arctic White', nameNL:'Arctisch Wit', body:'#EDE9E0', label:'#E0DCD2', accent:'#C04830', lTxt:'#806050'},
-  {id:'cherry',  name:'Cherry Red',   nameNL:'Kersenrood',   body:'#7C1209', label:'#951609', accent:'#FF9860', lTxt:'#FFCCAA'},
-  {id:'cobalt',  name:'Cobalt',       nameNL:'Kobalt',       body:'#0C2060', label:'#112878', accent:'#5090E8', lTxt:'#88BBFF'},
-  {id:'forest',  name:'Forest',       nameNL:'Bos',          body:'#082A10', label:'#0C3616', accent:'#48A860', lTxt:'#78D090'},
-  {id:'sand',    name:'Desert Sand',  nameNL:'Woestijnzand', body:'#7E5228', label:'#966030', accent:'#EAC870', lTxt:'#F4E0A0'},
-  {id:'obsidian',name:'Obsidian',     nameNL:'Obsidiaan',    body:'#12101E', label:'#1A1830', accent:'#7870C8', lTxt:'#A898E8'},
-  {id:'chrome',  name:'Chrome',       nameNL:'Chroom',       body:'#686F78', label:'#808890', accent:'#D8E2EC', lTxt:'#FFFFFF'}
+  { id: 'pitch',    name: 'Pitch Black',  nameNL: 'Gitzwart',     body: '#1C1814', ink: '#EFEFEE' },
+  { id: 'arctic',   name: 'Arctic White', nameNL: 'Arctisch Wit', body: '#EDE9E0', ink: '#0D0D0F' },
+  { id: 'cherry',   name: 'Cherry Red',   nameNL: 'Kersenrood',   body: '#7C1209', ink: '#EFEFEE' },
+  { id: 'cobalt',   name: 'Cobalt',       nameNL: 'Kobalt',       body: '#0C2060', ink: '#EFEFEE' },
+  { id: 'forest',   name: 'Forest',       nameNL: 'Bos',          body: '#082A10', ink: '#EFEFEE' },
+  { id: 'sand',     name: 'Desert Sand',  nameNL: 'Woestijnzand', body: '#7E5228', ink: '#EFEFEE' },
+  { id: 'obsidian', name: 'Obsidian',     nameNL: 'Obsidiaan',    body: '#12101E', ink: '#EFEFEE' },
+  { id: 'chrome',   name: 'Chrome',       nameNL: 'Chroom',       body: '#686F78', ink: '#FFFFFF' }
 ];
 const SHAPES = [
-  {id:'classic', name:'Classic',  nameNL:'Klassiek'},
-  {id:'skeleton',name:'Skeleton', nameNL:'Skelet'},
-  {id:'sport',   name:'Sport',    nameNL:'Sport'}
+  { id: 'classic',  name: 'Classic',  nameNL: 'Klassiek' },
+  { id: 'skeleton', name: 'Skeleton', nameNL: 'Skelet' },
+  { id: 'sport',    name: 'Sport',    nameNL: 'Sport' }
 ];
-const PRICE = 28.99;
+const PRICE = 28.99, MAX_TRACKS = 10;
 
 /* ─── I18N ─── */
 const I18N = {
   en: {
-    'nav.shop':'← Keep shopping',
-    'cart.title1':'Your','cart.title2':'cart','cart.empty':'Your cart is empty.',
-    'cart.empty.text':'No tapes yet. Time to build something.',
-    'cart.empty.btn':'▶ Build your tape',
-    'sum.subtotal':'Subtotal','sum.shipping':'Shipping','sum.free':'Free','sum.total':'Total',
-    'co.title':'Order form','co.contact':'Contact',
-    'co.firstname':'First name','co.lastname':'Last name',
-    'co.email':'Email address','co.phone':'Phone (optional)',
-    'co.shipping':'Shipping address','co.address':'Street address',
-    'co.city':'City','co.state':'State / Province','co.zip':'ZIP / Postal code','co.country':'Country',
-    'co.country.placeholder':'Select country…',
-    'co.note':'Order note (optional)','co.note.placeholder':'Any special requests or questions…',
-    'co.placeorder':'Place order —','co.stamp':'Received',
-    'co.paynote':'No payment is taken now. Our team will review your order and contact you to arrange payment and confirm production.',
-    'co.success.title':'Order received!',
-    'co.success.msg':'Thanks for your order! Our customer service team will review your full tape list and reach out to you at <em class="success-highlight">{email}</em> to arrange payment and confirm production.',
-    'co.success.continue':'← Build another tape',
-    'co.sending':'Sending order…',
-    'count.tapes':'{n} tapes ready for production','count.tape':'{n} tape ready for production',
-    'ph.first':'First','ph.last':'Last','ph.address':'123 Analog Way',
-    'err.required':'This field is required','err.email':'Enter a valid email address',
-    'toast.removed':'Tape removed.','toast.undo':'Undo',
-    'footer.txt':'© 2026 Taped Up. Built with analog love.'
+    'nav.speed': 'Speed', 'nav.reel': 'Reel', 'nav.shell': 'Shell', 'nav.build': 'Build', 'nav.specs': 'Specs', 'nav.shop': 'Keep shopping',
+    'cart.label': 'Cart — Order form', 'cart.title': 'Your <em>cart.</em>', 'cart.empty': 'Your cart is empty',
+    'cart.empty.text': 'No tapes yet. Time to build something.', 'cart.empty.btn': 'Build your tape',
+    'sum.subtotal': 'Subtotal', 'sum.shipping': 'Shipping', 'sum.free': 'Free', 'sum.total': 'Total',
+    'co.title': 'Order form', 'co.contact': 'Contact',
+    'co.firstname': 'First name', 'co.lastname': 'Last name',
+    'co.email': 'Email address', 'co.phone': 'Phone (optional)',
+    'co.shipping': 'Shipping address', 'co.address': 'Street address',
+    'co.city': 'City', 'co.state': 'State / Province', 'co.zip': 'ZIP / Postal code', 'co.country': 'Country',
+    'co.country.placeholder': 'Select country…',
+    'co.note': 'Order note (optional)', 'co.note.label': 'Note', 'co.note.placeholder': 'Any special requests or questions…',
+    'co.placeorder': 'Place order —', 'co.stamp': 'Received',
+    'co.paynote': 'No payment is taken now. Our team will review your order and contact you to arrange payment and confirm production.',
+    'co.success.title': 'Order received.',
+    'co.success.msg': 'Thanks for your order! Our customer service team will review your full tape list and reach out to you at <em>{email}</em> to arrange payment and confirm production.',
+    'co.success.continue': 'Build another tape', 'co.order': 'Order #',
+    'co.sending': 'Sending order…',
+    'count.tapes': '{n} tapes ready for production', 'count.tape': '{n} tape ready for production',
+    'ph.first': 'First', 'ph.last': 'Last', 'ph.address': '123 Analog Way',
+    'err.required': 'This field is required', 'err.email': 'Enter a valid email address',
+    'toast.removed': 'Tape removed', 'toast.undo': 'Undo',
+    'item.tracks': '{n} tracks · Side A', 'item.track': '{n} track · Side A', 'item.none': 'No tracks added',
+    'item.remove': 'Remove', 'item.dec': 'Decrease quantity', 'item.inc': 'Increase quantity',
+    'foot.since': 'Hand-dubbed since 1996', 'foot.home': 'Taped Up home ↑'
   },
   nl: {
-    'nav.shop':'← Verder winkelen',
-    'cart.title1':'Jouw','cart.title2':'wagen','cart.empty':'Je winkelwagen is leeg.',
-    'cart.empty.text':'Nog geen cassettes. Tijd om iets te bouwen.',
-    'cart.empty.btn':'▶ Bouw je cassette',
-    'sum.subtotal':'Subtotaal','sum.shipping':'Verzending','sum.free':'Gratis','sum.total':'Totaal',
-    'co.title':'Bestelformulier','co.contact':'Contact',
-    'co.firstname':'Voornaam','co.lastname':'Achternaam',
-    'co.email':'E-mailadres','co.phone':'Telefoon (optioneel)',
-    'co.shipping':'Verzendadres','co.address':'Straat',
-    'co.city':'Stad','co.state':'Provincie','co.zip':'Postcode','co.country':'Land',
-    'co.country.placeholder':'Kies een land…',
-    'co.note':'Opmerking (optioneel)','co.note.placeholder':'Speciale verzoeken of vragen…',
-    'co.placeorder':'Bestel —','co.stamp':'Ontvangen',
-    'co.paynote':'Er wordt nu geen betaling gedaan. Ons team beoordeelt je bestelling en neemt contact met je op om betaling en productie te regelen.',
-    'co.success.title':'Bestelling ontvangen!',
-    'co.success.msg':'Bedankt voor je bestelling! Ons klantenserviceteam neemt contact met je op via <em class="success-highlight">{email}</em> om betaling en productie te bevestigen.',
-    'co.success.continue':'← Bouw nog een cassette',
-    'co.sending':'Bestelling wordt verzonden…',
-    'count.tapes':'{n} cassettes klaar voor productie','count.tape':'{n} cassette klaar voor productie',
-    'ph.first':'Voornaam','ph.last':'Achternaam','ph.address':'Hoofdstraat 1',
-    'err.required':'Dit veld is verplicht','err.email':'Voer een geldig e-mailadres in',
-    'toast.removed':'Cassette verwijderd.','toast.undo':'Ongedaan maken',
-    'footer.txt':'© 2026 Taped Up. Met analoge liefde gemaakt.'
+    'nav.speed': 'Snelheid', 'nav.reel': 'Spoel', 'nav.shell': 'Behuizing', 'nav.build': 'Bouwen', 'nav.specs': 'Specs', 'nav.shop': 'Verder winkelen',
+    'cart.label': 'Winkelwagen — Bestelformulier', 'cart.title': 'Jouw <em>wagen.</em>', 'cart.empty': 'Je winkelwagen is leeg',
+    'cart.empty.text': 'Nog geen cassettes. Tijd om iets te bouwen.', 'cart.empty.btn': 'Bouw je cassette',
+    'sum.subtotal': 'Subtotaal', 'sum.shipping': 'Verzending', 'sum.free': 'Gratis', 'sum.total': 'Totaal',
+    'co.title': 'Bestelformulier', 'co.contact': 'Contact',
+    'co.firstname': 'Voornaam', 'co.lastname': 'Achternaam',
+    'co.email': 'E-mailadres', 'co.phone': 'Telefoon (optioneel)',
+    'co.shipping': 'Verzendadres', 'co.address': 'Straat',
+    'co.city': 'Stad', 'co.state': 'Provincie', 'co.zip': 'Postcode', 'co.country': 'Land',
+    'co.country.placeholder': 'Kies een land…',
+    'co.note': 'Opmerking (optioneel)', 'co.note.label': 'Opmerking', 'co.note.placeholder': 'Speciale verzoeken of vragen…',
+    'co.placeorder': 'Bestel —', 'co.stamp': 'Ontvangen',
+    'co.paynote': 'Er wordt nu geen betaling gedaan. Ons team beoordeelt je bestelling en neemt contact met je op om betaling en productie te regelen.',
+    'co.success.title': 'Bestelling ontvangen.',
+    'co.success.msg': 'Bedankt voor je bestelling! Ons klantenserviceteam neemt contact met je op via <em>{email}</em> om betaling en productie te bevestigen.',
+    'co.success.continue': 'Bouw nog een cassette', 'co.order': 'Bestelling #',
+    'co.sending': 'Bestelling wordt verzonden…',
+    'count.tapes': '{n} cassettes klaar voor productie', 'count.tape': '{n} cassette klaar voor productie',
+    'ph.first': 'Voornaam', 'ph.last': 'Achternaam', 'ph.address': 'Hoofdstraat 1',
+    'err.required': 'Dit veld is verplicht', 'err.email': 'Voer een geldig e-mailadres in',
+    'toast.removed': 'Cassette verwijderd', 'toast.undo': 'Ongedaan maken',
+    'item.tracks': '{n} nummers · kant A', 'item.track': '{n} nummer · kant A', 'item.none': 'Geen nummers',
+    'item.remove': 'Verwijderen', 'item.dec': 'Aantal verlagen', 'item.inc': 'Aantal verhogen',
+    'foot.since': 'Met de hand gedubd sinds 1996', 'foot.home': 'Taped Up home ↑'
   }
 };
-let LANG = localStorage.getItem('tuLang') || 'en';
-const t = k => (I18N[LANG] && I18N[LANG][k]) || (I18N.en[k] || k);
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : v; } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} },
+  del(k) { try { localStorage.removeItem(k); } catch (e) {} }
+};
+let LANG = store.get('tuLang', 'en') === 'nl' ? 'nl' : 'en';
+const t = k => (I18N[LANG] && I18N[LANG][k]) || I18N.en[k] || k;
+const $ = s => document.querySelector(s), $$ = s => Array.from(document.querySelectorAll(s));
+const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+const money = n => '$' + n.toFixed(2);
 
 function applyLang() {
   document.documentElement.lang = LANG;
-  document.querySelectorAll('[data-tx]').forEach(el => { el.innerHTML = t(el.dataset.tx); });
-  document.querySelectorAll('[data-tx-ph]').forEach(el => { el.placeholder = t(el.dataset.txPh); });
-  const lt = document.getElementById('langTog'); if (lt) lt.textContent = LANG.toUpperCase();
-  if (typeof renderCart === 'function') renderCart();
+  $$('[data-tx]').forEach(el => { el.innerHTML = t(el.dataset.tx); });
+  $$('[data-tx-ph]').forEach(el => { el.placeholder = t(el.dataset.txPh); });
+  $$('[data-lang-toggle]').forEach(b => { b.innerHTML = LANG === 'en' ? '<b>EN</b> / NL' : 'EN / <b>NL</b>'; });
+  renderCart();
 }
-function cycleLang() {
-  LANG = LANG === 'en' ? 'nl' : 'en';
-  localStorage.setItem('tuLang', LANG);
-  applyLang();
-}
+$$('[data-lang-toggle]').forEach(b => b.addEventListener('click', () => {
+  LANG = LANG === 'en' ? 'nl' : 'en'; store.set('tuLang', LANG); applyLang();
+}));
 
 /* ─── CART STATE ─── */
 let cart = [];
-try { cart = JSON.parse(localStorage.getItem('tuCart') || '[]'); } catch(e) { cart=[]; }
+try { cart = JSON.parse(store.get('tuCart', '[]')) || []; } catch (e) { cart = []; }
+const saveCart = () => store.set('tuCart', JSON.stringify(cart));
 
-/* ─── SVG CASSETTE THUMBNAIL ─── */
-function makeCassetteThumb(colorId, shapeId, songs) {
-  const C = COLORS.find(c=>c.id===colorId) || COLORS[0];
-  const isSkel  = shapeId==='skeleton';
-  const isSport = shapeId==='sport';
-  const W=400, H=248, bRx=11;
-  const lblH = isSport?68:92;
-  const winH = isSport?118:98;
-  const winX=56, winY=16+lblH+14, winW=288, winRx=7;
-  const lx=winX+76, rx2=winX+winW-76;
-  const ry=winY+Math.round(winH*.54);
-  const rR=isSport?44:38;
-  const bodyFill=isSkel?'none':C.body;
-  const bodyStroke=isSkel?C.body:'none';
-  const winBg=isSkel?'rgba(0,0,0,.18)':'#0A0806';
-  const validSongs=(songs||[]).filter(s=>s&&s.trim()).slice(0,4);
-  const songLines=validSongs.map((s,i)=>`<text x="38" y="${16+22+i*11.5}" font-family="Courier New,monospace" font-size="9" fill="${C.lTxt}" opacity=".9">${i+1}. ${s.replace(/&/g,'&amp;').replace(/</g,'&lt;').slice(0,26)}</text>`).join('');
-
-  const reelSVG=(cx,cy,cls)=>{
-    const sps=[0,120,240].map(a=>{const r=a*Math.PI/180;const x1=(cx+Math.cos(r)*9).toFixed(1),y1=(cy+Math.sin(r)*9).toFixed(1),x2=(cx+Math.cos(r)*(rR-10)).toFixed(1),y2=(cy+Math.sin(r)*(rR-10)).toFixed(1);return`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${C.accent}AA" stroke-width="2.5" stroke-linecap="round"/>`;}).join('');
-    return`<circle cx="${cx}" cy="${cy}" r="${rR+2}" fill="rgba(0,0,0,.45)"/><circle cx="${cx}" cy="${cy}" r="${rR}" fill="${isSkel?'rgba(28,22,14,.55)':'#120F08'}" stroke="${C.accent}55" stroke-width="1.5"/><circle cx="${cx}" cy="${cy}" r="${rR-7}" fill="none" stroke="${C.accent}22" stroke-width="5"/><g class="${cls}">${sps}</g><circle cx="${cx}" cy="${cy}" r="11" fill="${isSkel?'rgba(28,22,14,.7)':'#181208'}" stroke="${C.accent}77" stroke-width="1.5"/><circle cx="${cx}" cy="${cy}" r="4.5" fill="${C.accent}" opacity=".85"/>`;
+/* ─── Cassette line drawing (same geometry as the builder on index.html) ─── */
+function cassetteSVG(shape, songs) {
+  const P = (x, y) => `${+x.toFixed(2)} ${+(-y).toFixed(2)}`;
+  const rr = (w, h, r, cx = 0, cy = 0) => {
+    const x0 = cx - w / 2, x1 = cx + w / 2, y0 = cy - h / 2, y1 = cy + h / 2;
+    return `M ${P(x0 + r, y0)} L ${P(x1 - r, y0)} A ${r} ${r} 0 0 0 ${P(x1, y0 + r)} L ${P(x1, y1 - r)} A ${r} ${r} 0 0 0 ${P(x1 - r, y1)} L ${P(x0 + r, y1)} A ${r} ${r} 0 0 0 ${P(x0, y1 - r)} L ${P(x0, y0 + r)} A ${r} ${r} 0 0 0 ${P(x0 + r, y0)} Z`;
   };
-  const screws=[[22,22],[378,22],[22,226],[378,226]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="7.5" fill="rgba(0,0,0,.32)" stroke="rgba(255,255,255,.05)" stroke-width="1"/><line x1="${x-3.5}" y1="${y}" x2="${x+3.5}" y2="${y}" stroke="rgba(255,255,255,.13)" stroke-width="1.5" stroke-linecap="round"/><line x1="${x}" y1="${y-3.5}" x2="${x}" y2="${y+3.5}" stroke="rgba(255,255,255,.13)" stroke-width="1.5" stroke-linecap="round"/>`).join('');
-
-  return`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
-    <defs><clipPath id="wclip-${colorId}-${shapeId}"><rect x="${winX}" y="${winY}" width="${winW}" height="${winH}" rx="${winRx}"/></clipPath></defs>
-    <rect x="4" y="4" width="${W-8}" height="${H-8}" rx="${bRx}" fill="${bodyFill}" stroke="${bodyStroke}" stroke-width="${isSkel?2:0}"/>
-    <rect x="4.5" y="4.5" width="${W-9}" height="${H-9}" rx="${bRx}" fill="none" stroke="rgba(255,255,255,${isSkel?.1:.06})" stroke-width="1"/>
-    <rect x="30" y="16" width="340" height="${lblH}" rx="5" fill="${C.label}"/>
-    <text x="38" y="30" font-family="Arial,sans-serif" font-size="9.5" font-weight="800" fill="${C.accent}" opacity=".9" letter-spacing="4">SIDE A</text>
-    <line x1="38" y1="34" x2="362" y2="34" stroke="${C.accent}" stroke-width=".5" opacity=".35"/>
-    ${validSongs.length?songLines:`<text x="38" y="46" font-family="Courier New,monospace" font-size="9" fill="${C.lTxt}" opacity=".28" font-style="italic">no tracks</text>`}
-    <rect x="${winX-3}" y="${winY-3}" width="${winW+6}" height="${winH+6}" rx="${winRx+2}" fill="rgba(0,0,0,.55)"/>
-    <rect x="${winX}" y="${winY}" width="${winW}" height="${winH}" rx="${winRx}" fill="${winBg}"/>
-    <g clip-path="url(#wclip-${colorId}-${shapeId})">${reelSVG(lx,ry,'reel-cw')}${reelSVG(rx2,ry,'reel-ccw')}</g>
-    <rect x="${winX}" y="${winY}" width="${winW}" height="${winH}" rx="${winRx}" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="1"/>
-    ${screws}
-  </svg>`;
+  const teeth = (cx, cy) => {
+    let d = ''; for (let i = 0; i < 120; i++) { const a = i / 120 * Math.PI * 2, sg = ((a / (Math.PI / 3)) % 1 + 1) % 1, r = (sg < .16 || sg > .84) ? 4.3 : 6.4; d += (i ? ' L ' : 'M ') + P(cx + r * Math.cos(a), cy + r * Math.sin(a)); }
+    return d + ' Z';
+  };
+  const skel = shape === 'skeleton', sport = shape === 'sport';
+  const win = sport ? { w: 80, h: 30, r: 8, y: 1.6 } : { w: 64, h: 22, r: 6, y: 2.8 };
+  const lab = sport ? { y0: 20.2, y1: 29.6 } : skel ? { y0: 15.0, y1: 29.6 } : { y0: -17.2, y1: 29.6 };
+  const rows = sport ? 3 : 5, cap = rows * 2;
+  const list = (songs || []).map(s => String(s).trim()).filter(Boolean).slice(0, MAX_TRACKS);
+  const cut = s => s.length > 22 ? s.slice(0, 21) + '…' : s;
+  const id = 'w' + Math.random().toString(36).slice(2, 8);
+  let o = `<svg class="pv" viewBox="-54 -35 108 70" aria-hidden="true" focusable="false"><defs><clipPath id="${id}"><path d="${rr(win.w, win.h, win.r, 0, win.y)}"/></clipPath></defs>`;
+  o += `<path class="o${skel ? ' dash' : ''}" d="${rr(100.4, 63.8, 3.4)}"/>`;
+  const packs = `<circle class="pack" cx="-21.25" cy="-2.8" r="24.52"/><circle class="pack" cx="21.25" cy="-2.8" r="10.5"/>`;
+  o += skel ? packs : `<g clip-path="url(#${id})">${packs}</g>`;
+  o += `<path class="win${skel ? ' dash' : ''}" d="${rr(win.w, win.h, win.r, 0, win.y)}"/>`;
+  [-21.25, 21.25].forEach(x => { o += `<circle class="t" cx="${x}" cy="-2.8" r="10.5"/><path class="t" d="${teeth(x, 2.8)}"/>`; });
+  if (skel) {
+    o += `<path class="h" d="M ${P(-45.59, -0.2)} L ${P(-42.19, -27.8)} M ${P(-40.6, -29.2)} L ${P(40.6, -29.2)} M ${P(42.12, -27.1)} L ${P(31.23, 6.08)}"/>`;
+    [-40.6, 40.6].forEach(x => { o += `<circle class="h" cx="${x}" cy="27.6" r="1.6"/>`; });
+  }
+  const lh = lab.y1 - lab.y0;
+  o += `<path class="lbl" fill-rule="evenodd" d="${rr(86, lh, 1.2, 0, (lab.y0 + lab.y1) / 2)} ${lab.y0 < win.y ? rr(win.w + 2.4, win.h + 2.4, win.r + 1.2, 0, win.y) : ''}"/>`;
+  const top = lab.y1 - 2.9;
+  for (let i = 0; i < cap; i++) {
+    const col = i < rows ? 0 : 1, row = i % rows, x = col ? 3 : -41, y = top - row * 2.55, s = list[i];
+    o += `<text x="${x}" y="${(-y).toFixed(2)}" font-size="1.85" letter-spacing=".08">${String(i + 1).padStart(2, '0')}</text>`;
+    o += s ? `<text x="${x + 4.2}" y="${(-y).toFixed(2)}" font-size="1.85" letter-spacing=".06">${esc(cut(s).toUpperCase())}</text>`
+           : `<line class="h" x1="${x + 4.2}" y1="${(-y + .25).toFixed(2)}" x2="${x + 37}" y2="${(-y + .25).toFixed(2)}"/>`;
+  }
+  if (list.length > cap) o += `<text x="41" y="${(-(lab.y0 + 1.1)).toFixed(2)}" font-size="1.7" text-anchor="end">+${list.length - cap}</text>`;
+  const by = skel || sport ? -24.6 : -14.6, bx = skel || sport ? -24 : -41;
+  o += `<rect class="t" x="${bx}" y="${(-by - 3.4).toFixed(2)}" width="4.6" height="4.6"/><text x="${bx + 2.3}" y="${(-by + .4).toFixed(2)}" font-size="3.6" text-anchor="middle" class="wm">A</text>`;
+  o += `<text x="${bx + 6.6}" y="${(-by + .4).toFixed(2)}" font-size="3.3" class="wm">TAPED UP</text>`;
+  if (!skel && !sport) o += `<text x="41" y="${(-by + .2).toFixed(2)}" font-size="1.6" letter-spacing=".22" text-anchor="end">SIDE A · ${list.length}/${MAX_TRACKS}</text>`;
+  o += `<path class="t" d="M ${P(-36, -31.9)} L ${P(-28, -20.3)} L ${P(28, -20.3)} L ${P(36, -31.9)}"/>`;
+  [[0, 9.4], [-13.6, 3.6], [13.6, 3.6], [-25.8, 6], [25.8, 6]].forEach(([x, w]) => { o += `<rect class="t" x="${x - w / 2}" y="29.6" width="${w}" height="2.3"/>`; });
+  [[-46.3, 28.2], [46.3, 28.2], [-46.3, -28.2], [46.3, -28.2], [0, -25.9]].forEach(([x, y]) => { o += `<circle class="t" cx="${x}" cy="${-y}" r="1.8"/>`; });
+  return o + '</svg>';
 }
 
 /* ─── RENDER CART ─── */
 function renderCart() {
-  const itemsEl   = document.getElementById('cartItems');
-  const emptyEl   = document.getElementById('emptyMsg');
-  const summaryEl = document.getElementById('orderSummary');
-  const payBtn    = document.getElementById('payBtn');
-  const sub       = document.getElementById('itemsSub');
-
-  if (cart.length === 0) {
-    emptyEl.style.display   = '';
-    summaryEl.style.display = 'none';
-    payBtn.disabled         = true;
-    sub.textContent         = t('cart.empty');
-    itemsEl.innerHTML       = '';
-    syncPayTotal();
-    return;
+  const itemsEl = $('#cartItems'), emptyEl = $('#emptyMsg'), summaryEl = $('#orderSummary'), payBtn = $('#payBtn'), sub = $('#itemsSub');
+  if (!cart.length) {
+    emptyEl.hidden = false; summaryEl.hidden = true; itemsEl.hidden = true; payBtn.disabled = true;
+    sub.textContent = t('cart.empty'); itemsEl.innerHTML = ''; syncPayTotal(); return;
   }
+  emptyEl.hidden = true; summaryEl.hidden = false; itemsEl.hidden = false; payBtn.disabled = false;
+  const totalQty = cart.reduce((s, i) => s + i.qty, 0);
+  sub.textContent = (totalQty === 1 ? t('count.tape') : t('count.tapes')).replace('{n}', totalQty);
 
-  emptyEl.style.display   = 'none';
-  summaryEl.style.display = '';
-  payBtn.disabled         = false;
-
-  const totalQty = cart.reduce((s,i)=>s+i.qty, 0);
-  sub.textContent = (totalQty===1 ? t('count.tape') : t('count.tapes')).replace('{n}', totalQty);
-
-  const noTracksLbl = LANG==='nl' ? 'Geen tracks' : 'No tracks added';
-
-  itemsEl.innerHTML = cart.map((item) => {
-    const C = COLORS.find(c=>c.id===item.color)||COLORS[0];
-    const S = SHAPES.find(s=>s.id===item.shape)||SHAPES[0];
-    const cName = LANG==='nl' ? (C.nameNL||C.name) : C.name;
-    const sName = LANG==='nl' ? (S.nameNL||S.name) : S.name;
-    const linePrice = (PRICE * item.qty).toFixed(2);
-    const validSongs = (item.songs||[]).filter(s=>s.trim());
-    const trackWord = validSongs.length===1 ? 'track' : 'tracks';
-    const tracksDisplay = validSongs.join(' · ') || noTracksLbl;
-    const thumb = makeCassetteThumb(item.color, item.shape, item.songs||[]);
-    return `<div class="cart-item" id="ci-${item.id}">
-      <div class="ci-thumb">${thumb}</div>
-      <div class="ci-details">
-        <div class="ci-name">${cName} / ${sName}</div>
-        <div class="ci-meta">${validSongs.length} ${trackWord} · Side A</div>
-        <div class="ci-tracks">${tracksDisplay}</div>
-        <div class="ci-row">
-          <span class="ci-price">$${linePrice}</span>
-          <div class="ci-qty">
-            <button class="qty-btn" onclick="changeQty(${item.id}, -1)" ${item.qty<=1?'disabled':''} aria-label="Decrease quantity">−</button>
-            <span class="qty-n">${item.qty}</span>
-            <button class="qty-btn" onclick="changeQty(${item.id}, +1)" aria-label="Increase quantity">+</button>
-          </div>
-        </div>
+  itemsEl.innerHTML = cart.map(item => {
+    const C = COLORS.find(c => c.id === item.color) || COLORS[0];
+    const S = SHAPES.find(s => s.id === item.shape) || SHAPES[0];
+    const cName = LANG === 'nl' ? C.nameNL : C.name, sName = LANG === 'nl' ? S.nameNL : S.name;
+    const songs = (item.songs || []).filter(s => String(s).trim());
+    const meta = songs.length ? t(songs.length === 1 ? 'item.track' : 'item.tracks').replace('{n}', songs.length) : t('item.none');
+    return `<li class="item">
+      <div class="thumb" style="background:${C.body};color:${C.ink}">${cassetteSVG(item.shape, songs)}</div>
+      <div>
+        <p class="ci-name">${esc(cName)} / ${esc(sName)}</p>
+        <p class="meta ci-meta">${meta} · ${C.body}</p>
+        ${songs.length ? `<ol class="ci-tracks">${songs.map((s, i) => `<li><span>${String(i + 1).padStart(2, '0')}</span>${esc(s)}</li>`).join('')}</ol>` : ''}
       </div>
-      <button class="ci-rm" onclick="removeItem(${item.id})" title="Remove" aria-label="Remove tape">✕</button>
-    </div>`;
+      <div class="ci-side">
+        <span class="ci-price">${money(PRICE * item.qty)}</span>
+        <span class="qty">
+          <button type="button" data-qty="${item.id}" data-d="-1" ${item.qty <= 1 ? 'disabled' : ''} aria-label="${t('item.dec')}">−</button>
+          <span>${item.qty}</span>
+          <button type="button" data-qty="${item.id}" data-d="1" aria-label="${t('item.inc')}">+</button>
+        </span>
+        <button type="button" class="meta ci-rm" data-rm="${item.id}">${t('item.remove')}</button>
+      </div>
+    </li>`;
   }).join('');
-
   syncPayTotal();
 }
 
 function syncPayTotal() {
-  const total = cart.reduce((s,i)=>s+PRICE*i.qty, 0).toFixed(2);
-  document.getElementById('osSubtotal').textContent = `$${total}`;
-  document.getElementById('osTotal').textContent    = `$${total}`;
-  document.getElementById('payTotal').textContent   = `$${total}`;
+  const total = money(cart.reduce((s, i) => s + PRICE * i.qty, 0));
+  $('#osSubtotal').textContent = total; $('#osTotal').textContent = total;
+  const pt = $('#payTotal'); if (pt) pt.textContent = total;
 }
 
+$('#cartItems').addEventListener('click', e => {
+  const q = e.target.closest('[data-qty]');
+  if (q) { changeQty(+q.dataset.qty, +q.dataset.d); return; }
+  const r = e.target.closest('[data-rm]');
+  if (r) removeItem(+r.dataset.rm);
+});
 function changeQty(id, delta) {
-  const item = cart.find(i=>i.id===id);
-  if (!item) return;
-  item.qty = Math.max(1, item.qty + delta);
-  localStorage.setItem('tuCart', JSON.stringify(cart));
-  renderCart();
+  const item = cart.find(i => i.id === id); if (!item) return;
+  item.qty = Math.max(1, item.qty + delta); saveCart(); renderCart();
 }
-
 let lastRemoved = null;
 function removeItem(id) {
-  const idx = cart.findIndex(i=>i.id===id);
-  if (idx === -1) return;
+  const idx = cart.findIndex(i => i.id === id); if (idx === -1) return;
   lastRemoved = { item: cart[idx], idx };
-  cart.splice(idx, 1);
-  localStorage.setItem('tuCart', JSON.stringify(cart));
-  renderCart();
-  showToast(t('toast.removed'), `<button onclick="undoRemove()">${t('toast.undo')}</button>`);
+  cart.splice(idx, 1); saveCart(); renderCart();
+  showToast(t('toast.removed'), `<button type="button" onclick="undoRemove()">${t('toast.undo')}</button>`);
 }
 function undoRemove() {
   if (!lastRemoved) return;
   cart.splice(Math.min(lastRemoved.idx, cart.length), 0, lastRemoved.item);
-  lastRemoved = null;
-  localStorage.setItem('tuCart', JSON.stringify(cart));
-  renderCart();
-  document.getElementById('toasts').innerHTML = '';
+  lastRemoved = null; saveCart(); renderCart(); $('#toasts').innerHTML = '';
 }
 
-/* ─── TOASTS ─── */
-function showToast(msg, actionHTML='') {
+function showToast(msg, actionHTML = '') {
   const el = document.createElement('div');
-  el.className = 'toast';
-  el.setAttribute('role','status');
-  el.innerHTML = `<span class="tic">▸</span>${msg}${actionHTML ? '&nbsp;'+actionHTML : ''}`;
-  document.getElementById('toasts').appendChild(el);
-  setTimeout(()=>{el.classList.add('removing');setTimeout(()=>el.remove(),300);}, actionHTML ? 5000 : 2800);
+  el.className = 'toast meta'; el.setAttribute('role', 'status');
+  el.innerHTML = `<span>${msg}</span>${actionHTML}`;
+  $('#toasts').appendChild(el);
+  setTimeout(() => el.remove(), actionHTML ? 5000 : 2800);
 }
 
 /* ─── BUILD ORDER EMAIL BODY ─── */
+const val = id => document.getElementById(id).value.trim();
 function buildOrderSummaryText(orderNum) {
   const lines = [];
   lines.push(`ORDER: ${orderNum}`);
   lines.push(`DATE: ${new Date().toLocaleString()}`);
   lines.push('');
   lines.push('── CUSTOMER ──');
-  lines.push(`Name:    ${document.getElementById('fFirstName').value.trim()} ${document.getElementById('fLastName').value.trim()}`);
-  lines.push(`Email:   ${document.getElementById('fEmail').value.trim()}`);
-  const phone = document.getElementById('fPhone').value.trim();
-  if (phone) lines.push(`Phone:   ${phone}`);
+  lines.push(`Name:    ${val('fFirstName')} ${val('fLastName')}`);
+  lines.push(`Email:   ${val('fEmail')}`);
+  if (val('fPhone')) lines.push(`Phone:   ${val('fPhone')}`);
   lines.push('');
   lines.push('── SHIPPING ──');
-  lines.push(document.getElementById('fAddress').value.trim());
-  lines.push(`${document.getElementById('fCity').value.trim()}, ${document.getElementById('fState').value.trim()} ${document.getElementById('fZip').value.trim()}`);
+  lines.push(val('fAddress'));
+  lines.push(`${val('fCity')}, ${val('fState')} ${val('fZip')}`);
   lines.push(document.getElementById('fCountry').value);
   lines.push('');
   lines.push('── TAPES ──');
   cart.forEach((item, i) => {
-    const C = COLORS.find(c=>c.id===item.color)||COLORS[0];
-    const S = SHAPES.find(s=>s.id===item.shape)||SHAPES[0];
-    const tracks = (item.songs||[]).filter(s=>s.trim());
-    lines.push(`Tape ${i+1}: ${C.name} / ${S.name}  ×${item.qty}  ($${(PRICE*item.qty).toFixed(2)})`);
-    if (tracks.length) {
-      tracks.forEach((tr, ti) => lines.push(`  ${ti+1}. ${tr}`));
-    } else {
-      lines.push('  (no tracks)');
-    }
+    const C = COLORS.find(c => c.id === item.color) || COLORS[0];
+    const S = SHAPES.find(s => s.id === item.shape) || SHAPES[0];
+    const tracks = (item.songs || []).filter(s => String(s).trim());
+    lines.push(`Tape ${i + 1}: ${C.name} / ${S.name}  ×${item.qty}  (${money(PRICE * item.qty)})`);
+    if (tracks.length) tracks.forEach((tr, ti) => lines.push(`  ${ti + 1}. ${tr}`));
+    else lines.push('  (no tracks)');
     lines.push('');
   });
-  const total = cart.reduce((s,i)=>s+PRICE*i.qty,0).toFixed(2);
-  lines.push(`── TOTAL: $${total} (shipping: FREE) ──`);
-  const note = document.getElementById('fNote').value.trim();
-  if (note) { lines.push(''); lines.push('── NOTE ──'); lines.push(note); }
+  lines.push(`── TOTAL: ${money(cart.reduce((s, i) => s + PRICE * i.qty, 0))} (shipping: FREE) ──`);
+  if (val('fNote')) { lines.push(''); lines.push('── NOTE ──'); lines.push(val('fNote')); }
   return lines.join('\n');
 }
 
 /* ─── VALIDATION ─── */
 function setFieldError(id, msgKey) {
-  const el = document.getElementById(id);
-  const group = el.closest('.form-group');
-  const msgEl = document.getElementById('msg-' + id);
-  if (msgKey) {
-    group.classList.remove('invalid'); void group.offsetWidth; // restart shake
-    group.classList.add('invalid');
-    if (msgEl) msgEl.textContent = t(msgKey);
-    el.setAttribute('aria-invalid','true');
-  } else {
-    group.classList.remove('invalid');
-    el.removeAttribute('aria-invalid');
-  }
+  const el = document.getElementById(id), group = el.closest('.fg'), msgEl = document.getElementById('msg-' + id);
+  if (msgKey) { group.classList.add('invalid'); if (msgEl) msgEl.textContent = t(msgKey); el.setAttribute('aria-invalid', 'true'); }
+  else { group.classList.remove('invalid'); el.removeAttribute('aria-invalid'); }
 }
 
 /* ─── PLACE ORDER ─── */
+const REQUIRED = ['fFirstName', 'fLastName', 'fEmail', 'fAddress', 'fCity', 'fZip'];
 async function placeOrder() {
-  const required = ['fFirstName','fLastName','fEmail','fAddress','fCity','fZip'];
   let firstInvalid = null;
-  required.forEach(id => {
-    const el = document.getElementById(id);
-    let err = null;
+  REQUIRED.forEach(id => {
+    const el = document.getElementById(id); let err = null;
     if (!el.value.trim()) err = 'err.required';
     else if (id === 'fEmail' && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(el.value.trim())) err = 'err.email';
     setFieldError(id, err);
     if (err && !firstInvalid) firstInvalid = el;
   });
-  if (firstInvalid) {
-    firstInvalid.scrollIntoView({behavior:'smooth', block:'center'});
-    firstInvalid.focus({preventScroll:true});
-    return;
-  }
+  if (firstInvalid) { firstInvalid.scrollIntoView({ block: 'center' }); firstInvalid.focus({ preventScroll: true }); return; }
 
-  const email = document.getElementById('fEmail').value.trim();
-  const orderNum = 'TU-' + Math.random().toString(36).substr(2,8).toUpperCase();
-
-  const btn = document.getElementById('payBtn');
+  const email = val('fEmail');
+  const orderNum = 'TU-' + Math.random().toString(36).substr(2, 8).toUpperCase();
+  const btn = $('#payBtn');
   btn.disabled = true;
-  btn.classList.add('loading');
-  btn.innerHTML = `<div class="spinner"></div> ${t('co.sending')}`;
+  btn.innerHTML = `<span class="spinner"></span> ${t('co.sending')}`;
 
-  // Build payload (no card details sent — payment arranged separately)
+  // No card details are sent: payment is arranged separately.
   const payload = {
     _subject: `New Order ${orderNum} — TAPED UP`,
     order_number: orderNum,
-    customer_name: `${document.getElementById('fFirstName').value.trim()} ${document.getElementById('fLastName').value.trim()}`,
+    customer_name: `${val('fFirstName')} ${val('fLastName')}`,
     customer_email: email,
-    customer_phone: document.getElementById('fPhone').value.trim() || 'not provided',
-    shipping_address: [
-      document.getElementById('fAddress').value.trim(),
-      `${document.getElementById('fCity').value.trim()}, ${document.getElementById('fState').value.trim()} ${document.getElementById('fZip').value.trim()}`,
-      document.getElementById('fCountry').value
-    ].join('\n'),
-    order_total: `$${cart.reduce((s,i)=>s+PRICE*i.qty,0).toFixed(2)}`,
-    note: document.getElementById('fNote').value.trim() || '—',
+    customer_phone: val('fPhone') || 'not provided',
+    shipping_address: [val('fAddress'), `${val('fCity')}, ${val('fState')} ${val('fZip')}`, document.getElementById('fCountry').value].join('\n'),
+    order_total: money(cart.reduce((s, i) => s + PRICE * i.qty, 0)),
+    note: val('fNote') || '—',
     full_order_details: buildOrderSummaryText(orderNum)
   };
 
-  const isConfigured = FORMSPREE_ENDPOINT && !FORMSPREE_ENDPOINT.includes('YOUR_FORM_ID');
-  if (isConfigured) {
+  if (FORMSPREE_ENDPOINT && !FORMSPREE_ENDPOINT.includes('YOUR_FORM_ID')) {
     try {
-      await fetch(FORMSPREE_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-    } catch (err) {
-      console.warn('Email send failed:', err);
-    }
+      await fetch(FORMSPREE_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(payload) });
+    } catch (err) { console.warn('Email send failed:', err); }
   } else {
     console.warn('Formspree not configured. Set FORMSPREE_ENDPOINT in cart.html.');
   }
 
-  localStorage.removeItem('tuCart');
+  store.del('tuCart');
   cart = [];
-
-  document.getElementById('formBody').style.display = 'none';
-  const ss = document.getElementById('successState');
-  ss.classList.add('show');
-  document.getElementById('successOrderNum').textContent = (LANG==='nl'?'Bestelling #':'Order #')+orderNum;
-  document.getElementById('successMsg').innerHTML = t('co.success.msg').replace('{email}', email);
-  document.querySelector('.checkout-box').scrollIntoView({behavior:'smooth', block:'center'});
+  $('#formBody').style.display = 'none';
+  $('#successState').classList.add('show');
+  $('#successOrderNum').textContent = t('co.order') + orderNum;
+  $('#successMsg').innerHTML = t('co.success.msg').replace('{email}', esc(email));
+  renderCart();
+  $('#successState').scrollIntoView({ block: 'center' });
 }
+$('#payBtn').addEventListener('click', placeOrder);
 
 // Clear a field's error as soon as the user fixes it
-['fFirstName','fLastName','fEmail','fAddress','fCity','fZip'].forEach(id => {
-  document.getElementById(id).addEventListener('input', () => setFieldError(id, null));
-});
+REQUIRED.forEach(id => document.getElementById(id).addEventListener('input', () => setFieldError(id, null)));
 
 /* ─── INIT ─── */
 applyLang();
-renderCart();
 </script>
 </body>
 </html>
